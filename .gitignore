@@ -1,3 +1,6 @@
+# Data consists of almost 2GB of X-Ray images
+data
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
