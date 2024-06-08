@@ -1,5 +1,15 @@
-# Data consists of almost 2GB of X-Ray images
-data
+# The data consists of almost 2GB of X-Ray images
+data/*
+commands.sh
+notebooks/cam.jpg
+
+# Logs
+notebooks/Checkpoints
+notebooks/KerasTuner
+notebooks/mlruns
+notebooks/TensorBoard
+mlruns/*
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -80,6 +90,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+.virtual_documents
 
 # IPython
 profile_default/
