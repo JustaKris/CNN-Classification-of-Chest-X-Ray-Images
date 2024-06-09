@@ -1,6 +1,7 @@
 IMAGE_SIZE = (224, 224)
 BATCH_SIZE = 64
-NUM_CLASSES = 4
+COLOR_MODE = "rgb"
+INPUT_SHAPE = (*IMAGE_SIZE, 1 if COLOR_MODE == "grayscale" else 3)
 DATASETS = {
     "xray_train": "./data/Chest X-Rays/train",
     "xray_test": "./data/Chest X-Rays/test",
@@ -16,3 +17,11 @@ CLASSES = {
     2: 'PNEUMONIA',
     3: 'TURBERCULOSIS'
 }
+NUM_CLASSES = len(CLASSES)
+CLASS_NAMES = ["COVID19", "NORMAL", "PNEUMONIA", "TURBERCULOSIS"]
+CLASS_WEIGHTS = {
+    0: 8.4, 
+    1: 2.9, 
+    2: 1, 
+    3: 6
+} # Manual calculation

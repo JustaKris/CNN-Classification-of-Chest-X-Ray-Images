@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 from dataclasses import dataclass
-from src.config import BATCH_SIZE, IMAGE_SIZE
+from src.config import BATCH_SIZE, IMAGE_SIZE, COLOR_MODE
 
 
 @dataclass
@@ -15,9 +15,6 @@ class DataGeneratorConfig:
 
 
 class DataGenerator:
-    COLOR_MODE = "grayscale"
-
-
     def __init__(self, train_data_path: str = None, test_data_path: str = None, val_data_path: str = None):
         self.generator_config = DataGeneratorConfig()
         if train_data_path:
@@ -62,7 +59,7 @@ class DataGenerator:
             self.generator_config.train_data_path,
             target_size=IMAGE_SIZE,
             batch_size=BATCH_SIZE,
-            color_mode=self.COLOR_MODE,
+            color_mode=COLOR_MODE,
             class_mode='sparse',
             shuffle=True
         )
@@ -71,7 +68,7 @@ class DataGenerator:
             self.generator_config.test_data_path,
             target_size=IMAGE_SIZE,
             batch_size=BATCH_SIZE,
-            color_mode=self.COLOR_MODE,
+            color_mode=COLOR_MODE,
             # class_mode='categorical',
             class_mode='sparse',
             shuffle=False
@@ -81,7 +78,7 @@ class DataGenerator:
             self.generator_config.val_data_path,
             target_size=IMAGE_SIZE,
             batch_size=BATCH_SIZE,
-            color_mode=self.COLOR_MODE,
+            color_mode=COLOR_MODE,
             # class_mode='categorical',
             class_mode='sparse',
             shuffle=False
