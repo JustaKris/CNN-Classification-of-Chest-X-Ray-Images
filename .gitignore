@@ -9,6 +9,8 @@ notebooks/KerasTuner
 notebooks/mlruns
 notebooks/TensorBoard
 mlruns/*
+logs/*
+checkpoints/*
 
 
 # Byte-compiled / optimized / DLL files
