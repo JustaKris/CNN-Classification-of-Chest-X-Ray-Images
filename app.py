@@ -1,7 +1,7 @@
 import streamlit as st
 from src.utils.utils import get_best_model_path, load_model, predict, preprocess_image
 from src.config import CLASSES
-from src.utils.grad_cam import display_GRAD_heatmaps
+from src.utils.grad_cam import display_grad_heatmaps
 from PIL import Image
 
 # Set up the Streamlit interface
@@ -26,7 +26,11 @@ if uploaded_file is not None:
     st.write(f"Prediction: {prediction}")
     
     # Display the Grad-CAM heatmap and the superimposed image
-    display_GRAD_heatmaps(model, uploaded_file, display_heatmap=False)
+    display_grad_heatmaps(
+        model=model,
+        img_path=uploaded_file,
+        last_conv_layer_name="expanded_conv_10_add",  # Replace with the correct layer name for your model
+    )
     
     # Display the Grad-CAM image
     grad_cam_image_path = "./artifacts/grad_cam.jpg"

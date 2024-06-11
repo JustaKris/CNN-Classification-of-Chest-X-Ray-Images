@@ -11,9 +11,6 @@ EPOCHS = 20
 BETA_1 = 0.95
 METRICS = [
     SparseCategoricalAccuracy(),
-    # Precision(),
-    # Recall(),
-    # F1Score(),
     # AUC(multi_label=True)
 ]
 WEIGHTED_METRICS = METRICS.copy()

@@ -3,9 +3,8 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from matplotlib import colormaps as cm
-from src.config import CLASS_NAMES
+from src.config import CLASSES
 from IPython.display import display, Image
-
 
 def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None):
     # Create a model that maps the input image to the activations
@@ -72,23 +71,15 @@ def save_and_display_gradcam(img_path, heatmap, cam_path="./artifacts/", alpha=0
     superimposed_img.save(superimposed_img_path)
 
     # Display Grad CAM in Jupyter or IPython
-    # display(Image(cam_path, width=510, height=510))
+    display(Image(filename=superimposed_img_path))
 
-    # Display the original image
-    # plt.imshow(superimposed_img)
-    # plt.axis('off')  # Hide axis
-    # plt.show()
-
-def display_GRAD_heatmaps(model, img_path, display_heatmap=0):
+def display_grad_heatmaps(model, img_path, last_conv_layer_name, display_heatmap=0):
     # Prepare image
-    preprocess_input = tf.keras.applications.mobilenet_v3.preprocess_input
+    preprocess_input = tf.keras.applications.imagenet_utils.preprocess_input
     img_array = preprocess_input(get_img_array(img_path, size=(224, 224)))  # Ensure size matches model input size
 
-    # Prepare model
-    model = model
-
     # Target final convolutional layer
-    last_conv_layer_name = "expanded_conv_10_add"  # Ensure this matches your model's architecture
+    last_conv_layer_name = last_conv_layer_name
 
     # Remove softmax activation from final dense layer
     model.layers[-1].activation = None
@@ -97,7 +88,7 @@ def display_GRAD_heatmaps(model, img_path, display_heatmap=0):
     preds = model.predict(img_array)
 
     # Print predicted class
-    print("Predicted:", list(CLASS_NAMES)[np.argmax(preds)])
+    print("Predicted:", list(CLASSES.values())[np.argmax(preds)])
 
     # Generate class activation heatmap
     heatmap = make_gradcam_heatmap(img_array, model, last_conv_layer_name)
@@ -125,11 +116,11 @@ def get_img_array(img_path, size):
     array = np.expand_dims(array, axis=0)
     return array
 
-
 if __name__ == "__main__":
     import matplotlib.image as mpimg
     from src.utils.utils import preprocess_image, load_model, get_best_model_path
 
+    # Load the model
     model = load_model(get_best_model_path()[0])
     image_path = "./data/Chest X-Rays/train/NORMAL/IM-0127-0001.jpeg"
     image = preprocess_image(image_path)
@@ -138,7 +129,12 @@ if __name__ == "__main__":
     predictions = model.predict(image)
     print(f"Predictions -> {[round(pred * 100, 2) for pred in predictions.tolist()[0]]}\n")
 
-    display_GRAD_heatmaps(model, image_path)
+    # Display GRAD heatmaps
+    display_grad_heatmaps(
+        model=model,
+        img_path=image_path,
+        last_conv_layer_name="expanded_conv_10_add",  # Replace with the correct layer name for your model
+    )
 
     # Path to the image file
     image_path = "./artifacts/grad_cam.jpg"

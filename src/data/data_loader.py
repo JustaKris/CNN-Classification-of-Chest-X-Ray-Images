@@ -1,11 +1,11 @@
 import tensorflow as tf
 from tensorflow.keras.applications.imagenet_utils import preprocess_input # type: ignore
-from src.config import BATCH_SIZE, COLOR_MODE, CLASS_NAMES, DATASETS, IMAGE_SIZE
+from src.config import BATCH_SIZE, COLOR_MODE, CLASSES, DATASETS, IMAGE_SIZE
 
 AUTOTUNE = tf.data.AUTOTUNE
 
 # Function to load and preprocess the dataset
-def load_dataset(data_dir, image_size=IMAGE_SIZE, batch_size=BATCH_SIZE, class_names=CLASS_NAMES, augment=False, shuffle=False):
+def load_dataset(data_dir, image_size=IMAGE_SIZE, batch_size=BATCH_SIZE, class_names=CLASSES.values(), augment=False, shuffle=False):
     dataset = tf.keras.utils.image_dataset_from_directory(
         directory=data_dir,
         image_size=image_size,
@@ -44,7 +44,7 @@ if __name__ == "__main__":
         directory=dataset_dir,
         image_size=IMAGE_SIZE,
         batch_size=BATCH_SIZE,
-        class_names=CLASS_NAMES,
+        class_names=list(CLASSES.values()),
         label_mode='int',
         color_mode=COLOR_MODE
     )
