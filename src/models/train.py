@@ -18,9 +18,11 @@ WEIGHTED_METRICS = METRICS.copy()
 # Instantiate model
 model = MobileNetv3Transfer()
 model_name = "MobileNetV3Transfer"
+model_path, score = get_best_model_path(".\checkpoints\MobileNetv3Transfer")
 
 # model = EfficientNetTransfer()
 # model_name = "EfficientNetTransfer"
+# model_path, score = get_best_model_path(".\checkpoints\EfficientNetTransfer")
 
 # Compile model
 model.compile(
@@ -29,14 +31,12 @@ model.compile(
     metrics=METRICS,
     weighted_metrics=WEIGHTED_METRICS
 )
-
-# Get best model path and score
-model_path, score = get_best_model_path(".\checkpoints\MobileNetv3Transfer")
-# model_path, score = get_best_model_path(".\checkpoints\EfficientNetTransfer")
+# model.summary()
+# exit()
 
 # Load model
-# model = load_model(model_path)
-# print(f"Loaded model score: {score}")
+model = load_model(model_path)
+print(f"Loaded model score: {score}")
 
 # Callbacks
 callbacks = [

@@ -1,17 +1,16 @@
 import os
 import tensorflow as tf
-from datetime import datetime
+from src.utils import get_date, get_time
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau, LearningRateScheduler, TensorBoard # type: ignore
+
 
 METRIC = 'val_weighted_sparse_categorical_accuracy'
 
-# General purpose datetime tag
-def current_time():
-    return datetime.now().strftime("%Y.%m.%d_%H-%M")
-
 # Tensorboard callback
 def tensorboard_cb(model_name):
-    log_dir = f"./logs/tensorboard/{model_name}/{model_name}-{current_time()}"
-    return tf.keras.callbacks.TensorBoard(
+    log_dir = f"./logs/tensorboard/{model_name}/{model_name}-{get_date() + '_' + get_time()}"
+    # log_dir = f"./logs/tensorboard/{model_name}"
+    return TensorBoard(
         log_dir=log_dir, 
         # profile_batch=0, 
         write_images=True,
@@ -22,10 +21,11 @@ def tensorboard_cb(model_name):
 # Checkpoint callback
 def checkpoint_cb(model_name, initial_value_threshold=0.9):
     # Checpoints dir and model file name setup
-    dir = f"./checkpoints/{model_name}/{model_name}" + "-" + "{val_weighted_sparse_categorical_accuracy:.2f}-e{epoch:02d}" + "-" + f"{current_time()}.keras"
+    # dir = f"./checkpoints/{model_name}/{model_name}" + "-" + "{val_weighted_sparse_categorical_accuracy:.2f}-e{epoch:02d}" + "-" + f"{get_date() + '_' + get_time()}.keras"
+    dir = f"./checkpoints/{model_name}/{model_name}" + "-" + "{val_weighted_sparse_categorical_accuracy:.2f}" + "-" + f"{get_date()}.keras"
     # dir = f"./checkpoints/{model_name}/{model_name}" + "-{val_weighted_sparse_categorical_accuracy:.2f}.keras"
 
-    return tf.keras.callbacks.ModelCheckpoint(
+    return ModelCheckpoint(
         filepath=dir,
         monitor=METRIC, 
         mode='auto', 
@@ -37,17 +37,17 @@ def checkpoint_cb(model_name, initial_value_threshold=0.9):
         )
 
 # Early stopping callback
-early_stoppings_cb = tf.keras.callbacks.EarlyStopping(
+early_stoppings_cb = EarlyStopping(
     monitor=METRIC,
     mode='max',
     verbose=True,
-    patience=7,
-    min_delta=0.0001, 
+    patience=8,
+    min_delta=0.001,
     restore_best_weights=True
     )
 
 # Learning rate callback
-lr_plateau_cb = tf.keras.callbacks.ReduceLROnPlateau(
+lr_plateau_cb = ReduceLROnPlateau(
     monitor=METRIC,
     mode='max',
     verbose=True,
@@ -68,7 +68,7 @@ def lr_schedule(epoch, initial_lr=0.001):
         return initial_lr * 0.01
 
 # Create a LearningRateScheduler callback
-lr_scheduler_cb = tf.keras.callbacks.LearningRateScheduler(lr_schedule)
+lr_scheduler_cb = LearningRateScheduler(lr_schedule)
 
 # Custom TB callback
 class CustomTensorBoardCallback(tf.keras.callbacks.Callback):
@@ -77,7 +77,7 @@ class CustomTensorBoardCallback(tf.keras.callbacks.Callback):
         self.model_name = model_name
         self.log_dir_base = log_dir_base
         self.log_dir = self.create_log_dir()
-        self.tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=self.log_dir, profile_batch=0, histogram_freq=1)
+        self.tensorboard_callback = TensorBoard(log_dir=self.log_dir, profile_batch=0, histogram_freq=1)
         self.best_accuracy = 0
 
     def create_log_dir(self, accuracy=None):
@@ -109,8 +109,3 @@ class CustomTensorBoardCallback(tf.keras.callbacks.Callback):
 
     def on_epoch_end(self, epoch, logs=None):
         self.tensorboard_callback.on_epoch_end(epoch, logs)
-
-
-# Testing
-if __name__ == "__main__":
-    print(current_time())

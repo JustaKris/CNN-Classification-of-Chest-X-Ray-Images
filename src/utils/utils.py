@@ -1,10 +1,58 @@
 import os
+import datetime
+import requests
 import numpy as np
 import tensorflow as tf
 from PIL import Image
+from io import BytesIO
 from src.config import COLOR_MODE, IMAGE_SIZE
 from tensorflow.keras.applications.imagenet_utils import preprocess_input # type: ignore
 
+
+# General purpose date and time tags
+def get_date():
+    return datetime.now().strftime("%Y.%m.%d")
+
+def get_time():
+    return datetime.now().strftime("%H-%M")
+
+def load_image_from_url(url):
+    """Downloads an image from a URL and returns a PIL Image object.
+
+    Args:
+        url (str): The URL of the image to download.
+
+    Returns:
+        PIL.Image: The downloaded image as a PIL Image object, or None on error.
+    """
+    try:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+        response = requests.get(url, headers=headers, stream=True)
+
+        if response.status_code == 200:
+            # Read the image data into memory
+            image_data = BytesIO(response.content)
+            # Open the image from the in-memory stream using Pillow
+            image = Image.open(image_data)
+            return image
+        else:
+            raise requests.exceptions.RequestException(
+                f"Failed to download image. Status code: {response.status_code}")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error downloading image: {e}")
+        return None
+
+# def load_image_from_url(url):
+#     try:
+#         response = requests.get(url)
+#         response.raise_for_status()  # Check if the request was successful
+#         img = Image.open(BytesIO(response.content))
+#         return BytesIO(response.content)  # Return the image as a file-like object
+#     except requests.exceptions.RequestException as e:
+#         print(f"Error downloading the image: {e}")
+#         return None
 
 def preprocess_image(image_file, target_size=IMAGE_SIZE):
     image = Image.open(image_file)
@@ -54,6 +102,8 @@ def get_best_model_path(directory=".\checkpoints"):
 
 
 if __name__ == "__main__":
+    print("Datetime: " + get_date() + "_" + get_time())
+
     model = load_model(get_best_model_path("./checkpoints/MobileNetv3Transfer")[0])
     # image = preprocess_image("./data/Chest X-Rays/train/NORMAL/IM-0127-0001.jpeg")
     image = preprocess_image("C:/Users/ksbon/Downloads/Cat03.jpg")
