@@ -1,7 +1,7 @@
 from tensorflow.keras.applications import EfficientNetB0, MobileNetV3Small # type: ignore
 from tensorflow.keras.models import Model # type: ignore
 from tensorflow.keras.layers import BatchNormalization, Dense, Dropout, Flatten, GlobalAveragePooling2D # type: ignore
-from src.config import INPUT_SHAPE, NUM_CLASSES
+from src.config import INPUT_SHAPE, CLASSES
 
 
 def MobileNetv3Transfer():
@@ -13,22 +13,22 @@ def MobileNetv3Transfer():
     x = Flatten()(x)
 
     x = Dense(512, activation='relu')(x)
-    x = BatchNormalization()(x)
+    # x = BatchNormalization()(x)
     x = Dropout(0.5)(x)
 
     x = Dense(256, activation='relu')(x)
-    x = BatchNormalization()(x)
+    # x = BatchNormalization()(x)
     x = Dropout(0.4)(x)
 
     x = Dense(128, activation='relu')(x)
-    x = BatchNormalization()(x)
+    # x = BatchNormalization()(x)
     x = Dropout(0.3)(x)
-    
+
     x = Dense(64, activation='relu')(x)
-    x = BatchNormalization()(x)
+    # x = BatchNormalization()(x)
     x = Dropout(0.2)(x)
 
-    outputs = Dense(NUM_CLASSES, activation="softmax")(x)
+    outputs = Dense(len(CLASSES), activation="softmax")(x)
 
     model = Model(inputs=base_model.input, outputs=outputs)
     return model
@@ -44,21 +44,21 @@ def EfficientNetTransfer():
 
     x = Dense(512, activation='relu')(x)
     x = Dropout(0.5)(x)
-    x = BatchNormalization()(x)
+    # x = BatchNormalization()(x)
 
     x = Dense(256, activation='relu')(x)
     x = Dropout(0.4)(x)
-    x = BatchNormalization()(x)
+    # x = BatchNormalization()(x)
 
     x = Dense(128, activation='relu')(x)
     x = Dropout(0.3)(x)
-    x = BatchNormalization()(x)
+    # x = BatchNormalization()(x)
 
     x = Dense(64, activation='relu')(x)
     x = Dropout(0.2)(x)
-    x = BatchNormalization()(x)
+    # x = BatchNormalization()(x)
 
-    output = Dense(NUM_CLASSES, activation='softmax')(x)
+    output = Dense(len(CLASSES), activation='softmax')(x)
 
     model = Model(inputs=base_model.input, outputs=output)
     return model

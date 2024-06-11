@@ -66,8 +66,8 @@ history = model.fit(
 for layer in model.layers:  
     layer.trainable = False
 
-layers = -(len(model.layers) // 3)
-for layer in model.layers[-layers:]:
+layers_to_train = (len(model.layers) // 3)
+for layer in model.layers[-layers_to_train:]:
     layer.trainable = True
 
 # Recompile the model with a lower learning rate for fine-tuning

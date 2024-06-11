@@ -55,6 +55,22 @@ lr_plateau_cb = tf.keras.callbacks.ReduceLROnPlateau(
     mi_delta=0.0001
     )
 
+# Define learning rate schedule function
+def lr_schedule(epoch, initial_lr=0.001):
+    """
+    Returns a custom learning rate that decreases at certain epochs.
+    """
+    if epoch < 5:
+        return initial_lr
+    elif epoch < 15:
+        return initial_lr * 0.1
+    else:
+        return initial_lr * 0.01
+
+# Create a LearningRateScheduler callback
+lr_scheduler_cb = tf.keras.callbacks.LearningRateScheduler(lr_schedule)
+
+# Custom TB callback
 class CustomTensorBoardCallback(tf.keras.callbacks.Callback):
     def __init__(self, model_name, log_dir_base="./logs/tensorboard"):
         super().__init__()
