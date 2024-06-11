@@ -1,7 +1,10 @@
+# Basic model config
 IMAGE_SIZE = (224, 224)
 BATCH_SIZE = 64
 COLOR_MODE = "rgb"
 INPUT_SHAPE = (*IMAGE_SIZE, 1 if COLOR_MODE == "grayscale" else 3)
+
+# Datasets and classes
 DATASETS = {
     "xray_train": "./data/Chest X-Rays/train",
     "xray_test": "./data/Chest X-Rays/test",

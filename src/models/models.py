@@ -11,15 +11,24 @@ def MobileNetv3Transfer():
 
     x = GlobalAveragePooling2D()(base_model.output)
     x = Flatten()(x)
+
     x = Dense(512, activation='relu')(x)
+    x = BatchNormalization()(x)
     x = Dropout(0.5)(x)
+
     x = Dense(256, activation='relu')(x)
+    x = BatchNormalization()(x)
     x = Dropout(0.4)(x)
+
     x = Dense(128, activation='relu')(x)
+    x = BatchNormalization()(x)
     x = Dropout(0.3)(x)
+    
     x = Dense(64, activation='relu')(x)
+    x = BatchNormalization()(x)
     x = Dropout(0.2)(x)
-    outputs = Dense(4, activation="softmax")(x)
+
+    outputs = Dense(NUM_CLASSES, activation="softmax")(x)
 
     model = Model(inputs=base_model.input, outputs=outputs)
     return model

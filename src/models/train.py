@@ -1,33 +1,29 @@
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from src.models.models import EfficientNetTransfer, MobileNetv3Transfer
 from tensorflow.keras.optimizers import Adam # type: ignore
 from tensorflow.keras.losses import SparseCategoricalCrossentropy # type: ignore
-from src.utils.callbacks import tensorboard_cb, checkpoint_cb, early_stoppings_cb, lr_plateau_cb
+from tensorflow.keras.metrics import AUC, SparseCategoricalAccuracy # type: ignore
+from src.utils.callbacks import CustomTensorBoardCallback, tensorboard_cb, checkpoint_cb, early_stoppings_cb, lr_plateau_cb
 from src.utils.utils import get_best_model_path, load_model
 from src.data.data_loader import load_dataset
 from src.config import BATCH_SIZE, CLASS_WEIGHTS, DATASETS
 
-EPOCHS = 5
+EPOCHS = 20
 BETA_1 = 0.95
 METRICS = [
-    'accuracy',
-        # 'auc'
-        # tf.keras.metrics.Accuracy(),
-        # tf.keras.metrics.Precision(),
-        # tf.keras.metrics.Recall(),
-        # tf.keras.metrics.AUC()
+    SparseCategoricalAccuracy(),
+    # Precision(),
+    # Recall(),
+    # F1Score(),
+    # AUC(multi_label=True)
 ]
-WEIGHTED_METRICS = [
-    "accuracy"
-    ]
+WEIGHTED_METRICS = METRICS.copy()
 
 # Instantiate model
-# model = MobileNetv3Transfer()
-# model_name = "MobileNetv3Transfer"
+model = MobileNetv3Transfer()
+model_name = "MobileNetV3Transfer"
 
-model = EfficientNetTransfer()
-model_name = "EfficientNetTransfer"
+# model = EfficientNetTransfer()
+# model_name = "EfficientNetTransfer"
 
 # Compile model
 model.compile(
@@ -37,13 +33,25 @@ model.compile(
     weighted_metrics=WEIGHTED_METRICS
 )
 
-# model = load_model(get_best_model_path(".\checkpoints\MobileNetv3Transfer"))
+# Get best model path and score
+model_path, score = get_best_model_path(".\checkpoints\MobileNetv3Transfer")
+# model_path, score = get_best_model_path(".\checkpoints\EfficientNetTransfer")
+
+# Load model
+# model = load_model(model_path)
+# print(f"Loaded model score: {score}")
 
 # Callbacks
-callbacks = [tensorboard_cb(model_name), checkpoint_cb(model_name), early_stoppings_cb, lr_plateau_cb]
+callbacks = [
+    # CustomTensorBoardCallback(model_name),
+    tensorboard_cb(model_name), 
+    checkpoint_cb(model_name), 
+    early_stoppings_cb,
+    lr_plateau_cb
+    ]
 
 # Data loader
-train = load_dataset(DATASETS["xray_train"], augment=True)
+train = load_dataset(DATASETS["xray_train"], augment=True, shuffle=True)
 test = load_dataset(DATASETS["xray_test"])
 val = load_dataset(DATASETS["xray_val"])
 
@@ -54,12 +62,15 @@ history = model.fit(
     batch_size=BATCH_SIZE,
     validation_data=test,
     class_weight=CLASS_WEIGHTS,
-    shuffle=True,
     callbacks=callbacks
 )
 
 # Fine-tuning the base model
-for layer in model.layers[-20:]:  # Unfreeze the last 20 layers of the base model
+for layer in model.layers:  
+    layer.trainable = False
+
+layers = -(len(model.layers) // 3)
+for layer in model.layers[-layers:]:
     layer.trainable = True
 
 # Recompile the model with a lower learning rate for fine-tuning
@@ -77,6 +88,5 @@ history_fine_tune = model.fit(
     batch_size=BATCH_SIZE,
     validation_data=test,
     class_weight=CLASS_WEIGHTS,
-    shuffle=True,
     callbacks=callbacks
 )

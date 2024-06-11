@@ -1,8 +1,8 @@
-# streamlit_app/app.py
-
 import streamlit as st
 from src.utils.utils import get_best_model_path, load_model, predict, preprocess_image
 from src.config import CLASSES
+from src.utils.grad_cam import display_GRAD_heatmaps
+from PIL import Image
 
 # Set up the Streamlit interface
 st.title("Chest X-Ray Image Classification")
@@ -16,15 +16,19 @@ if uploaded_file is not None:
     
     # Load the model
     # model = load_model('./notebooks/Checkpoints/MobileNet_transfer/MobileNet_transfer-0.73-09-408449089731872812-b8b19d47e4f446889dd4418ea0ba3644.keras')
-    model = load_model(get_best_model_path())
+    # model = load_model('./checkpoints/MobileNetv3Transfer/MobileNetv3Transfer-0.92-e06-2024.06.11_14-00.keras')
+    model = load_model(get_best_model_path()[0])
     
     # Make prediction
     prediction = CLASSES[int(predict(model, image))]
-    
-    # Display the image
-    st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
-    st.write("")
-    st.write("Classifying...")
-    
-    # Display the result
+
+    # Display prediction
     st.write(f"Prediction: {prediction}")
+    
+    # Display the Grad-CAM heatmap and the superimposed image
+    display_GRAD_heatmaps(model, uploaded_file, display_heatmap=False)
+    
+    # Display the Grad-CAM image
+    grad_cam_image_path = "./artifacts/grad_cam.jpg"
+    grad_cam_image = Image.open(grad_cam_image_path)
+    st.image(grad_cam_image, caption='Original Image with overlayed Grad-CAM heatmap', use_column_width=True)

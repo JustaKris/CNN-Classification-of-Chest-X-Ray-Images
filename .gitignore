@@ -11,7 +11,7 @@ notebooks/TensorBoard
 mlruns/*
 logs/*
 checkpoints/*
-
+artifacts/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
