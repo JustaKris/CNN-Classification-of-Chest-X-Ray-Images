@@ -1,10 +1,10 @@
 import os
-import datetime
 import requests
 import numpy as np
 import tensorflow as tf
 from PIL import Image
 from io import BytesIO
+from datetime import datetime
 from src.config import COLOR_MODE, IMAGE_SIZE
 from tensorflow.keras.applications.imagenet_utils import preprocess_input # type: ignore
 
@@ -44,17 +44,17 @@ def load_image_from_url(url):
         print(f"Error downloading image: {e}")
         return None
 
-# def load_image_from_url(url):
-#     try:
-#         response = requests.get(url)
-#         response.raise_for_status()  # Check if the request was successful
-#         img = Image.open(BytesIO(response.content))
-#         return BytesIO(response.content)  # Return the image as a file-like object
-#     except requests.exceptions.RequestException as e:
-#         print(f"Error downloading the image: {e}")
-#         return None
-
 def preprocess_image(image_file, target_size=IMAGE_SIZE):
+    """
+    Preprocesses an image file for input to a model.
+
+    Args:
+        image_file (str): The file path or file-like object of the image.
+        target_size (tuple): The target size for the image. Defaults to IMAGE_SIZE.
+
+    Returns:
+        np.ndarray: The preprocessed image as a numpy array.
+    """
     image = Image.open(image_file)
     if image.mode.lower() != COLOR_MODE:
         image = image.convert(COLOR_MODE.upper())
@@ -81,6 +81,15 @@ def load_model(model_path):
     return tf.keras.models.load_model(model_path)
 
 def get_best_model_path(directory=".\checkpoints"):
+    """
+    Get the path of the best model file within the specified directory based on the filename.
+
+    Args:
+        directory (str): The directory to search for model files. Defaults to ".\checkpoints".
+
+    Returns:
+        Tuple[str, float]: A tuple containing the path of the best model file and its corresponding score.
+    """
     best_score = float('-inf')
     best_model_directory = None
 
@@ -104,7 +113,7 @@ def get_best_model_path(directory=".\checkpoints"):
 if __name__ == "__main__":
     print("Datetime: " + get_date() + "_" + get_time())
 
-    model = load_model(get_best_model_path("./checkpoints/MobileNetv3Transfer")[0])
+    model = load_model(get_best_model_path("./checkpoints/MobileNetV3Transfer")[0])
     # image = preprocess_image("./data/Chest X-Rays/train/NORMAL/IM-0127-0001.jpeg")
     image = preprocess_image("C:/Users/ksbon/Downloads/Cat03.jpg")
     print("Image Processed")

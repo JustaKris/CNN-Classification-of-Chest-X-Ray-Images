@@ -1,8 +1,8 @@
-from src.models.models import EfficientNetTransfer, MobileNetv3Transfer
+from src.models.models import EfficientNetTransfer, MobileNetV3Transfer
 from tensorflow.keras.optimizers import Adam # type: ignore
 from tensorflow.keras.losses import SparseCategoricalCrossentropy # type: ignore
 from tensorflow.keras.metrics import AUC, SparseCategoricalAccuracy # type: ignore
-from src.utils.callbacks import CustomTensorBoardCallback, tensorboard_cb, checkpoint_cb, early_stoppings_cb, lr_plateau_cb
+from src.utils.callbacks import CustomTensorBoardCallback, tensorboard_cb, checkpoint_cb, early_stoppings_cb, lr_plateau_cb, lr_scheduler_cb
 from src.utils.utils import get_best_model_path, load_model
 from src.data.data_loader import load_dataset
 from src.config import BATCH_SIZE, CLASS_WEIGHTS, DATASETS
@@ -16,12 +16,10 @@ METRICS = [
 WEIGHTED_METRICS = METRICS.copy()
 
 # Instantiate model
-model = MobileNetv3Transfer()
-model_name = "MobileNetV3Transfer"
-model_path, score = get_best_model_path(".\checkpoints\MobileNetv3Transfer")
+model = MobileNetV3Transfer()
+model_path, score = get_best_model_path(".\checkpoints\MobileNetV3Transfer")
 
 # model = EfficientNetTransfer()
-# model_name = "EfficientNetTransfer"
 # model_path, score = get_best_model_path(".\checkpoints\EfficientNetTransfer")
 
 # Compile model
@@ -35,16 +33,21 @@ model.compile(
 # exit()
 
 # Load model
-model = load_model(model_path)
-print(f"Loaded model score: {score}")
+# model = load_model(model_path)
+# print(f"Loaded model score: {score}")
+
+# Retrieve model name
+model_name = model.name
+model_name = "MobileNetV3Transfer"
 
 # Callbacks
 callbacks = [
     # CustomTensorBoardCallback(model_name),
     tensorboard_cb(model_name), 
-    checkpoint_cb(model_name), 
+    checkpoint_cb(model_name, score if score else 0.9), 
     early_stoppings_cb,
-    lr_plateau_cb
+    # lr_plateau_cb,
+    lr_scheduler_cb
     ]
 
 # Data loader
@@ -61,6 +64,13 @@ history = model.fit(
     class_weight=CLASS_WEIGHTS,
     callbacks=callbacks
 )
+
+# Eval
+# from src.utils.evaluate import plot_accuracy_loss, plot_confusion_matrix, show_classification_report
+# plot_accuracy_loss(history)
+# plot_confusion_matrix(model, test)
+# show_classification_report(model, test)
+# exit()
 
 # Fine-tuning the base model
 for layer in model.layers:  

@@ -1,5 +1,5 @@
 import kerastuner as kt
-from src.models.models import MobileNetv3Transfer
+from src.models.models import MobileNetV3Transfer
 from tensorflow.keras.losses import SparseCategoricalCrossentropy # type: ignore
 from tensorflow.keras.metrics import AUC, SparseCategoricalAccuracy # type: ignore
 from tensorflow.keras.applications import MobileNetV3Small # type: ignore
@@ -10,6 +10,7 @@ from src.config import DATASETS, CLASS_WEIGHTS, INPUT_SHAPE, CLASSES
 
 
 model_name = "MobileNetV3Transfer"
+
 def build_model(hp):
     base_model = MobileNetV3Small(weights='imagenet', include_top=False, input_shape=INPUT_SHAPE)
 
@@ -28,17 +29,17 @@ def build_model(hp):
     x = BatchNormalization()(x)
     x = Dropout(hp.Float('dropout1', values=[0.5, 0.3]))(x)
 
-    x = Dense(hp.Int('dense2', values=[512, 256]) // 2, activation='relu')(x)
+    x = Dense(hp.Int('dense2', values=[256, 128]), activation='relu')(x)
     x = BatchNormalization()(x)
-    x = Dropout(hp.Float('dropout2', values=[0.5, 0.3]) - 0.1)(x)
+    x = Dropout(hp.Float('dropout2', values=[0.3, 0.2]))(x)
 
-    x = Dense(hp.Int('dense3', values=[512, 256]) // 4, activation='relu')(x)
+    x = Dense(hp.Int('dense3', values=[128, 64]), activation='relu')(x)
     x = BatchNormalization()(x)
-    x = Dropout(hp.Float('dropout3', values=[0.5, 0.3]) - 0.2)(x)
+    x = Dropout(hp.Float('dropout3', values=[0.2, 0.1]))(x)
     
-    x = Dense(hp.Int('dense4', values=[512, 256]) // 8, activation='relu')(x)
+    x = Dense(hp.Int('dense4', values=[64, 32]), activation='relu')(x)
     x = BatchNormalization()(x)
-    x = Dropout(hp.Float('dropout4', values=[0.5, 0.3]) - 0.3)(x)
+    x = Dropout(hp.Float('dropout4', values=[0.1, 0.05]))(x)
 
     outputs = Dense(len(CLASSES), activation="softmax")(x)
 

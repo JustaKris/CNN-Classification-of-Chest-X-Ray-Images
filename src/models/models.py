@@ -4,7 +4,7 @@ from tensorflow.keras.layers import BatchNormalization, Dense, Dropout, Flatten,
 from src.config import INPUT_SHAPE, CLASSES
 
 
-def MobileNetv3Transfer():
+def MobileNetV3Transfer():
     base_model = MobileNetV3Small(weights='imagenet', include_top=False, input_shape=INPUT_SHAPE)
 
     base_model.trainable = False  # Freeze the base model initially
@@ -30,7 +30,7 @@ def MobileNetv3Transfer():
 
     outputs = Dense(len(CLASSES), activation="softmax")(x)
 
-    model = Model(inputs=base_model.input, outputs=outputs)
+    model = Model(inputs=base_model.input, outputs=outputs, name="MobileNetV3Transfer")
     return model
 
 
@@ -60,5 +60,5 @@ def EfficientNetTransfer():
 
     output = Dense(len(CLASSES), activation='softmax')(x)
 
-    model = Model(inputs=base_model.input, outputs=output)
+    model = Model(inputs=base_model.input, outputs=output, name="EfficientNetTransfer")
     return model

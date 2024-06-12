@@ -1,6 +1,6 @@
 import os
 import tensorflow as tf
-from src.utils import get_date, get_time
+from src.utils.utils import get_date, get_time
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau, LearningRateScheduler, TensorBoard # type: ignore
 
 
