@@ -17,7 +17,7 @@ WEIGHTED_METRICS = METRICS.copy()
 
 # Instantiate model
 model = MobileNetV3Transfer()
-model_path, score = get_best_model_path(".\checkpoints\MobileNetV3Transfer")
+# model_path, score = get_best_model_path(".\checkpoints\MobileNetV3Transfer")
 
 # model = EfficientNetTransfer()
 # model_path, score = get_best_model_path(".\checkpoints\EfficientNetTransfer")
@@ -38,7 +38,8 @@ model.compile(
 
 # Retrieve model name
 model_name = model.name
-model_name = "MobileNetV3Transfer"
+print(model_name)
+# model_name = "MobileNetV3Transfer"
 
 # Callbacks
 callbacks = [
