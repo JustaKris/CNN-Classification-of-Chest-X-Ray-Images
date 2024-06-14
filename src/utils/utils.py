@@ -1,4 +1,5 @@
 import os
+import dill
 import requests
 import numpy as np
 import tensorflow as tf
@@ -16,14 +17,17 @@ def get_date():
 def get_time():
     return datetime.now().strftime("%H-%M")
 
-def load_image_from_url(url):
-    """Downloads an image from a URL and returns a PIL Image object.
+def load_image_from_url(url, save_dir='./artifacts', save_filename='downloaded_image.jpg'):
+    """
+    Downloads an image from a URL and saves it locally.
 
     Args:
         url (str): The URL of the image to download.
+        save_dir (str): The directory to save the downloaded image.
+        save_filename (str): The filename to save the downloaded image.
 
     Returns:
-        PIL.Image: The downloaded image as a PIL Image object, or None on error.
+        str: The local path of the downloaded image.
     """
     try:
         headers = {
@@ -31,11 +35,19 @@ def load_image_from_url(url):
         response = requests.get(url, headers=headers, stream=True)
 
         if response.status_code == 200:
+            # Ensure the save directory exists
+            os.makedirs(save_dir, exist_ok=True)
+
+            # Full path to save the image
+            save_path = os.path.join(save_dir, save_filename)
+
             # Read the image data into memory
             image_data = BytesIO(response.content)
-            # Open the image from the in-memory stream using Pillow
-            image = Image.open(image_data)
-            return image
+            # Save the image locally
+            with open(save_path, 'wb') as f:
+                f.write(image_data.getbuffer())
+
+            return save_path
         else:
             raise requests.exceptions.RequestException(
                 f"Failed to download image. Status code: {response.status_code}")
@@ -56,6 +68,7 @@ def preprocess_image(image_file, target_size=IMAGE_SIZE):
         np.ndarray: The preprocessed image as a numpy array.
     """
     image = Image.open(image_file)
+    # image = image_file
     if image.mode.lower() != COLOR_MODE:
         image = image.convert(COLOR_MODE.upper())
     image = image.resize(target_size)  # Resize to match the model input
@@ -70,15 +83,6 @@ def preprocess_image(image_file, target_size=IMAGE_SIZE):
     image = preprocess_input(image)  # Preprocess the image according to ImageNet standards
     image = np.expand_dims(image, axis=0)  # Add batch dimension
     return image
-
-def predict(model, image):
-    predictions = model.predict(image)
-    # print([round(float(pred), 3) for pred in predictions.tolist()])
-    predicted_class = np.argmax(predictions, axis=1)
-    return predicted_class
-
-def load_model(model_path):
-    return tf.keras.models.load_model(model_path)
 
 def get_best_model_path(directory=".\checkpoints"):
     """
@@ -109,14 +113,49 @@ def get_best_model_path(directory=".\checkpoints"):
 
     return best_model_directory, best_score
 
+def load_model(model_path):
+    return tf.keras.models.load_model(model_path)
+
+def save_pkl(object, filename='default_name.pkl'):
+    # Ensure the artifacts directory exists
+    dir = "./artifacts"
+    os.makedirs(dir, exist_ok=True)  # Create the directory if it doesn't exist
+
+    # File path
+    file_path = os.path.join(dir, filename)
+    
+    # Save the object
+    with open(file_path, 'wb') as f:
+        dill.dump(object, f)
+    print(f"Object saved to {file_path}")
+
+def load_pkl(filename='default_name.pkl'):
+    dir = "./artifacts"
+    file_path = os.path.join(dir, filename)
+    
+    # Load the object
+    with open(file_path, 'rb') as f:
+        loaded_object = dill.load(f)
+    print(f"Object loaded from {file_path}")
+    return loaded_object
+
 
 if __name__ == "__main__":
-    print("Datetime: " + get_date() + "_" + get_time())
+    # print("Datetime: " + get_date() + "_" + get_time())
 
-    model = load_model(get_best_model_path("./checkpoints/MobileNetV3Transfer")[0])
-    # image = preprocess_image("./data/Chest X-Rays/train/NORMAL/IM-0127-0001.jpeg")
-    image = preprocess_image("C:/Users/ksbon/Downloads/Cat03.jpg")
-    print("Image Processed")
+    # model = load_model(get_best_model_path("./checkpoints/MobileNetV3Transfer")[0])
+    # # image = preprocess_image("./data/Chest X-Rays/train/NORMAL/IM-0127-0001.jpeg")
+    # image = preprocess_image("C:/Users/ksbon/Downloads/Cat03.jpg")
+    # print("Image Processed")
 
-    predictions = model.predict(image)
-    print([round(pred * 100, 2) for pred in predictions.tolist()[0]])
+    # predictions = model.predict(image)
+    # print([round(pred * 100, 2) for pred in predictions.tolist()[0]])
+
+    #
+    url = "https://f.hubspotusercontent30.net/hubfs/1553939/Imported_Blog_Media/IM-0005-0001_jpeg-e1585651946797.jpg"
+    img = load_image_from_url(url)
+    print(img)
+    preprocessed_image = preprocess_image(img)
+    print(preprocessed_image)
+    other_image = preprocess_image("./data/Chest X-Rays/train/NORMAL/IM-0127-0001.jpeg")
+    print(other_image)

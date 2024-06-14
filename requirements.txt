@@ -11,4 +11,5 @@ scikit-learn
 streamlit
 Pillow  # This is required for image handling in Streamlit
 opencv-python
+dill
 -e .

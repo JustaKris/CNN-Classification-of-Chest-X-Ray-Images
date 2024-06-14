@@ -1,88 +1,75 @@
 import numpy as np
-import seaborn as sns
-import tensorflow as tf
 import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix
-from src.config import BATCH_SIZE, CLASSES
+from src.config import CLASSES
 
 
 CLASS_NAMES = list(CLASSES.values())
-METRIC = 'weighted_sparse_categorical_accuracy'
 
 # Accuracy and loss training plots per epoch
-def plot_accuracy_loss(history):
+def plot_accuracy_loss(history, metric="accuracy"):
 
-    fig = plt.figure(figsize=(15,9))
+    fig = plt.figure(figsize=(12,5))
 
     # Plot accuracy
     plt.subplot(221)
-    plt.plot(history.history[METRIC],'o-', label = "train")
-    plt.plot(history.history['val_' + METRIC], 'o-', label = "val")
+    # plt.plot(history.history[METRIC],'o-', label = "train")
+    # plt.plot(history.history['val_' + METRIC], 'o-', label = "val")
+    plt.plot(history[metric],'o-', label = "train")
+    plt.plot(history['val_' + metric], 'o-', label = "val")
     plt.title("train vs val accuracy")
-    plt.ylabel(METRIC)
+    plt.ylabel(metric)
     plt.xlabel("epochs")
     plt.legend()
 
     # Plot loss
     plt.subplot(222)
-    plt.plot(history.history['loss'],'o-', label = "train")
-    plt.plot(history.history['val_loss'], 'o-', label = "val")
+    # plt.plot(history.history['loss'],'o-', label = "train")
+    # plt.plot(history.history['val_loss'], 'o-', label = "val")
+    plt.plot(history['loss'],'o-', label = "train")
+    plt.plot(history['val_loss'], 'o-', label = "val")
     plt.title("train vs val loss")
     plt.ylabel("loss")
     plt.xlabel("epochs")
 
     plt.legend()
     plt.show()
-    
-# Confusion matrix plot
-def plot_confusion_matrix(model, dataset, class_names=CLASS_NAMES):
-    """
-    Plots a confusion matrix using predictions from the model on the given dataset.
-    
-    Args:
-        model (tf.keras.Model): The trained model.
-        dataset (tf.data.Dataset): The dataset to predict.
-        class_names (list): List of class names for labeling the confusion matrix.
-    """
+
+
+def print_confusion_matrix(cm, labels):
+    column_width = max([len(x) for x in labels] + [5])  # 5 is a buffer for numbers
+
+    # Print header
+    print(" " * column_width, end="")
+    for label in labels:
+        print(f"{label:>{column_width}}", end="")
+    print()
+
+    # Print rows
+    for i, label in enumerate(labels):
+        print(f"{label:>{column_width}}", end="")
+        for j in range(len(labels)):
+            print(f"{cm[i, j]:>{column_width}}", end="")
+        print()
+
+
+def evaluate_model(model, dataset, class_names=CLASS_NAMES):
+    # Generate predictions
     true = []
     pred = []
-
     for images, labels in dataset:
-        predictions = model.predict(images)
+        predictions = model.predict(images, verbose=False)
         true.extend(labels.numpy())
         pred.extend(np.argmax(predictions, axis=1))
 
+    # Classification report
+    print("\n||---------------- Classification Report ----------------||")
+    print(classification_report(true, pred, target_names=class_names))
+
+    # Confusion Matrix
     cf_matrix = confusion_matrix(true, pred)
 
-    ax = plt.axes()
-    plt.xticks(fontsize=16)
-    plt.yticks(fontsize=16)
-    sns.heatmap(cf_matrix, 
-                annot=True, 
-                linewidths=2, 
-                cmap='Blues', 
-                annot_kws={"size": 15}, 
-                xticklabels=class_names, 
-                yticklabels=class_names, 
-                ax=ax)
-    plt.show()
-
-# Classification report function
-def show_classification_report(model, dataset, class_names=CLASS_NAMES):
-    """
-    Prints a classification report using predictions from the model on the given dataset.
-    
-    Args:
-        model (tf.keras.Model): The trained model.
-        dataset (tf.data.Dataset): The dataset to predict.
-        class_names (list): List of class names for labeling the classification report.
-    """
-    true = []
-    pred = []
-
-    for images, labels in dataset:
-        predictions = model.predict(images)
-        true.extend(labels.numpy())
-        pred.extend(np.argmax(predictions, axis=1))
-    
-    print(classification_report(true, pred, target_names=class_names))
+    # Print Confusion Matrix to Console
+    print("||------------------------ Confusion Matrix  ------------------------||")
+    print_confusion_matrix(cf_matrix, class_names)
+    print()

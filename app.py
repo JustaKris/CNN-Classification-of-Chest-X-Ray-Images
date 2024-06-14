@@ -1,5 +1,6 @@
+import numpy as np
 import streamlit as st
-from src.utils.utils import get_best_model_path, load_model, predict, load_image_from_url, preprocess_image
+from src.utils.utils import get_best_model_path, load_model, load_image_from_url, preprocess_image
 from src.config import CLASSES
 from src.utils.grad_cam import display_grad_heatmaps
 from PIL import Image
@@ -24,15 +25,17 @@ def process_image(image_file):
     model = load_model(get_best_model_path()[0])
 
     # Make prediction
-    prediction = CLASSES[int(predict(model, processed_image))]
+    # prediction_value = predict(model, processed_image)
+    prediction_value = max(model.predict(processed_image).tolist()[0])
+    prediction = CLASSES[int(prediction_value)]
 
     # Display prediction
-    st.write(f"Prediction: {prediction}")
+    st.write(f"Prediction - {prediction} - with a confidence level of {round(prediction_value * 100)}%")
     
     # Display the Grad-CAM heatmap and the superimposed image
     display_grad_heatmaps(
         model=model,
-        img_path=uploaded_file,
+        img_path=image_file,
         last_conv_layer_name="expanded_conv_10_add"  # Replace with the correct layer name for your model
         # last_conv_layer_name="top_conv"
     )

@@ -5,19 +5,19 @@ from tensorflow.keras.metrics import AUC, SparseCategoricalAccuracy # type: igno
 from src.utils.callbacks import CustomTensorBoardCallback, tensorboard_cb, checkpoint_cb, early_stoppings_cb, lr_plateau_cb, lr_scheduler_cb
 from src.utils.utils import get_best_model_path, load_model
 from src.data.data_loader import load_dataset
-from src.config import BATCH_SIZE, CLASS_WEIGHTS, DATASETS
+from src.utils.evaluate import evaluate_model, plot_accuracy_loss
+from src.config import BATCH_SIZE, CLASSES, CLASS_WEIGHTS, DATASETS
 
 EPOCHS = 20
-BETA_1 = 0.95
+BETA_1 = 0.85
 METRICS = [
     SparseCategoricalAccuracy(),
     # AUC(multi_label=True)
 ]
-WEIGHTED_METRICS = METRICS.copy()
 
 # Instantiate model
 model = MobileNetV3Transfer()
-# model_path, score = get_best_model_path(".\checkpoints\MobileNetV3Transfer")
+model_path, score = get_best_model_path(".\checkpoints\MobileNetV3Transfer")
 
 # model = EfficientNetTransfer()
 # model_path, score = get_best_model_path(".\checkpoints\EfficientNetTransfer")
@@ -27,7 +27,7 @@ model.compile(
     optimizer=Adam(learning_rate=1e-3, beta_1=BETA_1),
     loss=SparseCategoricalCrossentropy(),
     metrics=METRICS,
-    weighted_metrics=WEIGHTED_METRICS
+    weighted_metrics=METRICS
 )
 # model.summary()
 # exit()
@@ -45,10 +45,10 @@ print(model_name)
 callbacks = [
     # CustomTensorBoardCallback(model_name),
     tensorboard_cb(model_name), 
-    checkpoint_cb(model_name, score if score else 0.9), 
+    checkpoint_cb(model_name, score), 
     early_stoppings_cb,
-    # lr_plateau_cb,
-    lr_scheduler_cb
+    lr_plateau_cb,
+    # lr_scheduler_cb
     ]
 
 # Data loader
@@ -67,26 +67,21 @@ history = model.fit(
 )
 
 # Eval
-# from src.utils.evaluate import plot_accuracy_loss, plot_confusion_matrix, show_classification_report
-# plot_accuracy_loss(history)
-# plot_confusion_matrix(model, test)
-# show_classification_report(model, test)
-# exit()
+evaluate_model(model, test, CLASSES.values())
+plot_accuracy_loss(history=history.history, metric="weighted_sparse_categorical_accuracy")
 
 # Fine-tuning the base model
-for layer in model.layers:  
-    layer.trainable = False
-
-layers_to_train = (len(model.layers) // 3)
+layers_to_train = (len(model.layers) // 5)
 for layer in model.layers[-layers_to_train:]:
     layer.trainable = True
+print(f"Model layers for fine tuning - Last {layers_to_train}")
 
 # Recompile the model with a lower learning rate for fine-tuning
 model.compile(
     optimizer=Adam(learning_rate=1e-5, beta_1=BETA_1),
     loss=SparseCategoricalCrossentropy(),
     metrics=METRICS,
-    weighted_metrics=WEIGHTED_METRICS
+    weighted_metrics=METRICS
 )
 
 # Continue training with unfrozen layers
@@ -98,3 +93,7 @@ history_fine_tune = model.fit(
     class_weight=CLASS_WEIGHTS,
     callbacks=callbacks
 )
+
+# Eval
+evaluate_model(model, test, CLASSES.values())
+plot_accuracy_loss(history=history.history, metric="weighted_sparse_categorical_accuracy")

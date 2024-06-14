@@ -14,19 +14,19 @@ def MobileNetV3Transfer():
 
     x = Dense(512, activation='relu')(x)
     # x = BatchNormalization()(x)
-    x = Dropout(0.3)(x)
+    x = Dropout(0.5)(x)
 
     x = Dense(256, activation='relu')(x)
     # x = BatchNormalization()(x)
-    x = Dropout(0.2)(x)
+    x = Dropout(0.3)(x)
 
     x = Dense(128, activation='relu')(x)
     # x = BatchNormalization()(x)
-    x = Dropout(0.1)(x)
+    x = Dropout(0.2)(x)
 
     x = Dense(64, activation='relu')(x)
     # x = BatchNormalization()(x)
-    x = Dropout(0.05)(x)
+    x = Dropout(0.1)(x)
 
     outputs = Dense(len(CLASSES), activation="softmax")(x)
 
@@ -40,22 +40,23 @@ def EfficientNetTransfer():
     base_model.trainable = False  # Freeze the base model initially
 
     x = GlobalAveragePooling2D()(base_model.output)
-    x = BatchNormalization()(x)
+    x = Flatten()(x)
+    # x = BatchNormalization()(x)
 
     x = Dense(512, activation='relu')(x)
-    x = Dropout(0.3)(x)
+    x = Dropout(0.5)(x)
     # x = BatchNormalization()(x)
 
     x = Dense(256, activation='relu')(x)
-    x = Dropout(0.2)(x)
+    x = Dropout(0.3)(x)
     # x = BatchNormalization()(x)
 
     x = Dense(128, activation='relu')(x)
-    x = Dropout(0.1)(x)
+    x = Dropout(0.2)(x)
     # x = BatchNormalization()(x)
 
     x = Dense(64, activation='relu')(x)
-    x = Dropout(0.05)(x)
+    x = Dropout(0.1)(x)
     # x = BatchNormalization()(x)
 
     output = Dense(len(CLASSES), activation='softmax')(x)
