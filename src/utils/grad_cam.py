@@ -71,7 +71,7 @@ def save_and_display_gradcam(img_path, heatmap, cam_path="./artifacts/", alpha=0
     superimposed_img.save(superimposed_img_path)
 
     # Display Grad CAM in Jupyter or IPython
-    display(Image(filename=superimposed_img_path))
+    # display(Image(filename=superimposed_img_path))
 
 def display_grad_heatmaps(model, img_path, last_conv_layer_name, display_heatmap=0):
     # Prepare image
@@ -85,7 +85,7 @@ def display_grad_heatmaps(model, img_path, last_conv_layer_name, display_heatmap
     model.layers[-1].activation = None
 
     # Predict image
-    preds = model.predict(img_array)
+    preds = model.predict(img_array, verbose=False)
 
     # Print predicted class
     print("Predicted:", list(CLASSES.values())[np.argmax(preds)])
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     image = preprocess_image(image_path)
     print("Image Processed\n")
 
-    predictions = model.predict(image)
+    predictions = model.predict(image, verbose=False)
     print(f"Predictions -> {[round(pred * 100, 2) for pred in predictions.tolist()[0]]}\n")
 
     # Display GRAD heatmaps
