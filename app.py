@@ -22,15 +22,16 @@ def process_image(image_file):
     # model = load_model('./notebooks/Checkpoints/MobileNet_transfer/MobileNet_transfer-0.73-09-408449089731872812-b8b19d47e4f446889dd4418ea0ba3644.keras')
     # model = load_model('./checkpoints/MobileNetV3Transfer/MobileNetV3Transfer-0.92-e06-2024.06.11_14-00.keras') 
     # model = load_model('./checkpoints/EfficientNetTransfer/EfficientNetTransfer-0.90-2024.06.11.keras')
-    model = load_model(get_best_model_path()[0])
+    model = load_model(get_best_model_path(".\saved_models")[0])
 
     # Make prediction
     # prediction_value = predict(model, processed_image)
-    prediction_value = max(model.predict(processed_image).tolist()[0])
-    prediction = CLASSES[int(prediction_value)]
+    prediction = model.predict(processed_image)
+    prediction_class = CLASSES[int(np.argmax(prediction))]
+    prediction_value = max(prediction.tolist()[0])
 
     # Display prediction
-    st.write(f"Prediction - {prediction} - with a confidence level of {round(prediction_value * 100)}%")
+    st.write(f"Prediction - {prediction_class} - with a confidence level of {round(prediction_value * 100)}%")
     
     # Display the Grad-CAM heatmap and the superimposed image
     display_grad_heatmaps(
