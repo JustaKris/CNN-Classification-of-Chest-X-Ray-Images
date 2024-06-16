@@ -10,10 +10,11 @@ from src.exception import CustomException
 
 app = Flask(__name__, template_folder='templates')
 
-# Load the model
+# Load the model during application startup
 try:
     model_path, _ = get_best_model_path("./saved_models")
     model = load_model(model_path)
+    logging.info(f"Model successfully loaded from {model_path}")
 except Exception as e:
     logging.error(f"Error loading model: {e}")
     raise CustomException(e, sys)
@@ -73,6 +74,7 @@ def process():
             return redirect(url_for('prediction', prediction=prediction_class, confidence=round(prediction_value * 100), grad_cam_image=os.path.basename(grad_cam_image_path)))
         except Exception as e:
             error = "An error occurred while processing the uploaded image."
+            logging.error(f"Error processing uploaded image: {e}")
     elif 'image_url' in request.form and request.form['image_url']:
         image_url = request.form['image_url']
         try:
@@ -84,6 +86,7 @@ def process():
                 error = "Failed to load image from URL."
         except Exception as e:
             error = "An error occurred while loading the image from URL."
+            logging.error(f"Error loading image from URL: {e}")
 
     return render_template('index.html', error=error)
 
@@ -100,4 +103,4 @@ if __name__ == '__main__':
         host="0.0.0.0", 
         port=int(os.environ.get("PORT", 5050)), 
         debug=os.environ.get("DEBUG", "false").lower() == "true"
-        )
+    )
