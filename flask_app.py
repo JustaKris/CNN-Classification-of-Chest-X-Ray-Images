@@ -10,11 +10,10 @@ from src.logger import logging
 from src.exception import CustomException
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = './static/uploads'
 
 # Load the model
 try:
-    model_path = get_best_model_path("./saved_models")[0]
+    model_path, _ = get_best_model_path("./saved_models")
     model = load_model(model_path)
 except Exception as e:
     logging.error(f"Error loading model: {e}")
@@ -40,46 +39,61 @@ def process_image(image_file):
         )
         logging.info("GRAD Cam generated successfully.")
 
-        # Save Grad-CAM image to static/uploads
+        # Return the path to the Grad-CAM image
         grad_cam_image_path = "./artifacts/grad_cam.jpg"
-        if not os.path.exists(app.config['UPLOAD_FOLDER']):
-            os.makedirs(app.config['UPLOAD_FOLDER'])
-        grad_cam_dest = os.path.join(app.config['UPLOAD_FOLDER'], 'grad_cam.jpg')
-        os.rename(grad_cam_image_path, grad_cam_dest)
-
-        return prediction_class, prediction_value, 'grad_cam.jpg'
+        return prediction_class, prediction_value, grad_cam_image_path
     except Exception as e:
         logging.error(f"Error processing image: {e}")
         raise CustomException(e, sys)
 
-@app.route('/uploads/<filename>')
+@app.route('/artifacts/<filename>')
 def send_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_from_directory('./artifacts', filename)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    prediction_class, prediction_value, grad_cam_filename = None, None, None
-    error = None
-    
-    if request.method == 'POST':
-        if 'file' in request.files and request.files['file']:
-            file = request.files['file']
-            try:
-                prediction_class, prediction_value, grad_cam_filename = process_image(file)
-            except Exception as e:
-                error = "An error occurred while processing the uploaded image."
-        elif 'url' in request.form and request.form['url']:
-            image_url = request.form['url']
-            try:
-                image_file = load_image_from_url(image_url)
-                if image_file:
-                    prediction_class, prediction_value, grad_cam_filename = process_image(image_file)
-                else:
-                    error = "Failed to load image from URL."
-            except Exception as e:
-                error = "An error occurred while loading the image from URL."
+    return render_template('index.html')
 
-    return render_template('index.html', prediction=prediction_class, confidence=round(prediction_value * 100) if prediction_value else None, grad_cam_image=grad_cam_filename, error=error)
+@app.route('/process', methods=['POST'])
+def process():
+    error = None
+    if 'file' in request.files and request.files['file']:
+        file = request.files['file']
+        try:
+            # Save the uploaded file temporarily
+            temp_file_path = os.path.join('./artifacts', file.filename)
+            file.save(temp_file_path)
+            
+            # Pass the temporary file path to process_image
+            prediction_class, prediction_value, grad_cam_image_path = process_image(temp_file_path)
+            
+            # Remove the temporary file after processing
+            if os.path.exists(temp_file_path):
+                os.remove(temp_file_path)
+            
+            return redirect(url_for('prediction', prediction=prediction_class, confidence=round(prediction_value * 100), grad_cam_image=os.path.basename(grad_cam_image_path)))
+        except Exception as e:
+            error = "An error occurred while processing the uploaded image."
+    elif 'image_url' in request.form and request.form['image_url']:
+        image_url = request.form['image_url']
+        try:
+            image_file = load_image_from_url(image_url)
+            if image_file:
+                prediction_class, prediction_value, grad_cam_image_path = process_image(image_file)
+                return redirect(url_for('prediction', prediction=prediction_class, confidence=round(prediction_value * 100), grad_cam_image=os.path.basename(grad_cam_image_path)))
+            else:
+                error = "Failed to load image from URL."
+        except Exception as e:
+            error = "An error occurred while loading the image from URL."
+
+    return render_template('index.html', error=error)
+
+@app.route('/prediction')
+def prediction():
+    prediction_class = request.args.get('prediction')
+    confidence = request.args.get('confidence')
+    grad_cam_image = request.args.get('grad_cam_image')
+    return render_template('prediction.html', prediction=prediction_class, confidence=confidence, grad_cam_image=grad_cam_image)
 
 if __name__ == '__main__':
     app.run(debug=True)

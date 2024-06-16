@@ -18,37 +18,31 @@
             The app will display the predicted class and the confidence level.
             A Grad-CAM heatmap will be generated to highlight the regions of the image that were important for the prediction.</p>
         
-        <form method="POST" action="/upload" enctype="multipart/form-data">
+        <form method="POST" action="/process" enctype="multipart/form-data">
             <div class="field">
                 <label for="file-upload">Upload a chest X-ray image file:</label>
                 <input type="file" id="file-upload" name="file" accept="image/*">
+                <button type="submit">Upload</button>
             </div>
-            <button type="submit">Upload</button>
         </form>
         
-        <form method="POST" action="/url">
+        <form method="POST" action="/process">
             <div class="field">
                 <label for="image-url">Or enter the URL of a chest X-ray image:</label>
                 <input type="text" id="image-url" name="image_url" placeholder="Enter image URL">
+                <button type="submit">Submit</button>
             </div>
-            <button type="submit">Submit</button>
         </form>
         
-        {% if prediction %}
-            <h2>Prediction</h2>
-            <p>Prediction: {{ prediction }} - with a confidence level of {{ confidence }}%</p>
-        {% endif %}
-        
-        {% if grad_cam_image %}
-            <h2>Grad-CAM Heatmap</h2>
-            <img src="{{ grad_cam_image }}" alt="Grad-CAM Image" class="grad-cam">
-        {% endif %}
-
         <div class="links">
             <a class="link" href="https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/tree/Project-Revisit" target="_blank">Project Repository</a>
             <span class="separator">|</span>
             <a class="link" href="https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/blob/Project-Revisit/notebooks/CNN%20classification%20of%20chest%20X-Ray%20Images.ipynb" target="_blank">Research Notebook</a>
         </div>
+        
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
     </div>
 </body>
 </html>

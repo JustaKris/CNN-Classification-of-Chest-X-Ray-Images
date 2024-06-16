@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Prediction Result</h1>
+        <h2>Prediction</h2>
+        <p>Prediction: {{ prediction }} - with a confidence level of {{ confidence }}%</p>
+        
+        <h2>Grad-CAM Heatmap</h2>
+        <img src="{{ url_for('send_file', filename=grad_cam_image) }}" alt="Grad-CAM Image" class="grad-cam">
+        
+        <form action="{{ url_for('index') }}">
+            <button type="submit">Go Back</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -71,8 +71,7 @@ button {
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     width: 120px; /* Fixed width for buttons */
-    margin-top: -10px;
-    margin-bottom: 20px;
+    margin: 5px;
     vertical-align: middle;
     display: inline-block; /* Ensure buttons are inline */
 }
