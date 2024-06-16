@@ -6,12 +6,12 @@ seaborn
 glob2
 mlflow
 scikit-learn
-# scikit-image
+scikit-image
 keras-tuner
-# opencv-python
+opencv-python
 dill
 IPython
 Flask
-# streamlit
-# Pillow  # This is required for image handling in Streamlit
+streamlit
+Pillow  # This is required for image handling in Streamlit
 -e .

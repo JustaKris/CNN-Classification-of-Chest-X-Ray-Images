@@ -8,7 +8,7 @@ from src.config import CLASSES
 from src.logger import logging
 from src.exception import CustomException
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 
 # Load the model
 try:
@@ -95,4 +95,9 @@ def prediction():
     return render_template('prediction.html', prediction=prediction_class, confidence=confidence, grad_cam_image=grad_cam_image)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Run the application
+    app.run(
+        host="0.0.0.0", 
+        port=int(os.environ.get("PORT", 5050)), 
+        debug=os.environ.get("DEBUG", "false").lower() == "true"
+        )
