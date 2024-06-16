@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,10 +22,18 @@ body {
     text-align: center;
     width: 90%;
     margin: auto; /* Center align the container */
+    overflow: hidden; /* Ensure contents do not overflow */
 }
 
 h1, h2 {
     color: #fff; /* White text */
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+h3, h4, h5 {
+    color: #fff; /* White text */
+    margin: 5px;
 }
 
 .field {
@@ -71,7 +79,8 @@ button {
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     width: 120px; /* Fixed width for buttons */
-    margin: 5px;
+    margin-top: 10px;
+    margin-bottom: 0px;
     vertical-align: middle;
     display: inline-block; /* Ensure buttons are inline */
 }
@@ -97,6 +106,7 @@ a.link:hover {
     display: block;
     margin: 20px auto;
     max-width: 100%;
+    max-height: 80vh; /* Ensure image does not exceed viewport height */
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -112,4 +122,11 @@ a.link:hover {
     color: white;
     margin: 0 10px;
     font-weight: bold;
+}
+
+.section-divider {
+    border: none;
+    border-top: 1px solid #ddd; /* Adjust border style */
+    margin: 20px 0; /* Adjust margin for spacing */
+    padding: 0;
 }

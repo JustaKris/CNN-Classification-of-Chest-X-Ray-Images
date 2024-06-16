@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prediction Result</title>
+    <title>Chest X-Ray Image Classification - Prediction</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Prediction Result</h1>
-        <h2>Prediction</h2>
-        <p>Prediction: {{ prediction }} - with a confidence level of {{ confidence }}%</p>
+        <h3>Prediction: {{ prediction }}</h3>
+        <p>Confidence Level: {{ confidence }}%</p>
+        <div class="image-container"></div>
+        {% if grad_cam_image %}
+       
+            <img src="{{ url_for('send_file', filename=grad_cam_image) }}" alt="Grad-CAM Image" class="grad-cam">
+            <h5>Original image with overlayed model activations heatmap (Grad-CAM)</h5>
         
-        <h2>Grad-CAM Heatmap</h2>
-        <img src="{{ url_for('send_file', filename=grad_cam_image) }}" alt="Grad-CAM Image" class="grad-cam">
+        {% endif %}
         
-        <form action="{{ url_for('index') }}">
-            <button type="submit">Go Back</button>
-        </form>
+        <button onclick="window.location.href='/'">Go Back</button>
+        </div>
     </div>
 </body>
 </html>

@@ -10,13 +10,22 @@
 <body>
     <div class="container">
         <h1>Chest X-Ray Image Classification</h1>
-        <p>This application classifies chest X-ray images using a pre-trained convolutional neural network (CNN).
-            The model can identify whether an X-ray image indicates the presence of pneumonia.</p>
+        <p>
+            This application classifies chest X-ray images using a pre-trained convolutional neural network (CNN).
+            The model can identify whether an X-ray image indicates the presence of three ilnesses - <b>Covid19, Tunerculosis and Pneumonia
+            </b> - with <b>Normal</b> being the output if neither of the three are detected.
+        </p>
         
         <h2>How to Use This App</h2>
-        <p>You can upload a chest X-ray image file or provide a URL to the image.
+        <p>
+            You can upload a chest X-ray image file or provide a URL to the image.
             The app will display the predicted class and the confidence level.
-            A Grad-CAM heatmap will be generated to highlight the regions of the image that were important for the prediction.</p>
+            A Grad-CAM heatmap will be generated to highlight the regions of the image that were important for the prediction.
+            <!-- The model was trained on this dataset: <a class="link" href="https://www.kaggle.com/datasets/jtiptj/chest-xray-pneumoniacovid19tuberculosis" target="_blank">Kaggle Dataset</a> -->
+        </p>
+        
+        <!-- Horizontal rule -->
+        <hr class="section-divider">
         
         <form method="POST" action="/process" enctype="multipart/form-data">
             <div class="field">
