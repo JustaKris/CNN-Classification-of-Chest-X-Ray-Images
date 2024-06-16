@@ -5,13 +5,13 @@ tensorflow
 seaborn
 glob2
 mlflow
-keras-tuner
-scikit-image
 scikit-learn
-streamlit
-Pillow  # This is required for image handling in Streamlit
-opencv-python
+# scikit-image
+keras-tuner
+# opencv-python
 dill
 IPython
 Flask
+# streamlit
+# Pillow  # This is required for image handling in Streamlit
 -e .

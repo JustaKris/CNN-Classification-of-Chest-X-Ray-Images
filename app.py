@@ -2,7 +2,6 @@ import os
 import sys
 import numpy as np
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory
-from PIL import Image
 from src.utils.utils import get_best_model_path, load_model, load_image_from_url, preprocess_image
 from src.utils.grad_cam import display_grad_heatmaps
 from src.config import CLASSES
