@@ -130,3 +130,18 @@ a.link:hover {
     margin: 20px 0; /* Adjust margin for spacing */
     padding: 0;
 }
+
+.image-container {
+    max-width: 100%; /* Ensures image does not exceed the container */
+    max-height: 70vh; /* Adjust to fit within 70% of viewport height */
+    overflow: hidden; /* Prevents images from overflowing */
+    margin: 5px auto; /* Adds margin for spacing */
+    text-align: center; /* Centers image horizontally */
+}
+
+.image-container img {
+    max-width: 100%; /* Ensure image fits within its container */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Ensures no extra space below image */
+    margin: 0 auto; /* Centers the image within its container */
+}
