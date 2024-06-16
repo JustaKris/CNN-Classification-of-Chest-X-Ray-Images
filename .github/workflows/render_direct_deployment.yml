@@ -1,4 +1,4 @@
-name: Deploy Titanic Survival Predictor Flask App to Render
+name: Deploy Chest X-Ray Classification Flask App to Render
 
 on:
   push:

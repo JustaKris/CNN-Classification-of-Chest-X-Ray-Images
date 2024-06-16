@@ -1,4 +1,4 @@
-name: Build and deploy Python app to Azure Web App - xray-classification
+name: Build and deploy X-Ray Classification app to Azure
 
 on:
   push:
