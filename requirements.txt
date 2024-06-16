@@ -13,4 +13,5 @@ Pillow  # This is required for image handling in Streamlit
 opencv-python
 dill
 IPython
+Flask
 -e .
