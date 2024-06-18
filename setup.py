@@ -17,11 +17,9 @@ def get_requirements(file_path: str) -> List[str]:
     Returns:
         List[str]: A list of package requirements.
     """
-    requirements = []
-
     with open(file_path, encoding='utf-8') as file_obj:
         requirements = file_obj.readlines()
-        requirements = [req.strip() for req in requirements]
+        requirements = [req.strip() for req in requirements if req.strip() and not req.startswith('#')]
 
         # Removing editable flag from list of packages if present
         if HYPHEN_E_DOT in requirements:
@@ -40,13 +38,14 @@ setup(
     url='https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/tree/Project-Revisit',
     packages=find_packages(),
     install_requires=get_requirements('requirements.txt'),
+    setup_requires=['setuptools>=58.0.0'],
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.9',
     entry_points={
-    'console_scripts': ['x-ray_image_classifier=app:main']
+        'console_scripts': ['x-ray_image_classifier=app:main']
     }
 )

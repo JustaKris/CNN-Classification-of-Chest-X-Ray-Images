@@ -87,14 +87,15 @@ st.markdown("""
 ## About This App
 
 This application classifies chest X-ray images using a pre-trained convolutional neural network (CNN).
-The model can identify whether an X-ray image indicates the presence of pneumonia.
+The model can identify whether an X-ray image indicates the presence of three ilnesses - <b>Covid19, Tunerculosis and Pneumonia
+</b> - with <b>Normal</b> being the output if neither of the three are detected.
 
 ### How to Use This App
 - You can upload a chest X-ray image file or provide a URL to the image.
 - The app will display the predicted class and the confidence level.
 - A Grad-CAM heatmap will be generated to highlight the regions of the image that were important for the prediction.
 
-### Useful Links
+### Links
 - [Project Repository](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/tree/Project-Revisit)
 - [Research Notebook](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/blob/Project-Revisit/notebooks/CNN%20classification%20of%20chest%20X-Ray%20Images.ipynb)
 """)
