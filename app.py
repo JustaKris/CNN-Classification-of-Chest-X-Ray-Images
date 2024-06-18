@@ -61,15 +61,15 @@ def process():
         file = request.files['file']
         try:
             # Save the uploaded file temporarily
-            temp_file_path = os.path.join('./artifacts', file.filename)
+            temp_file_path = os.path.join('./artifacts', 'downloaded_image.jpg')
             file.save(temp_file_path)
             
             # Pass the temporary file path to process_image
             prediction_class, prediction_value, grad_cam_image_path = process_image(temp_file_path)
             
             # Remove the temporary file after processing
-            if os.path.exists(temp_file_path):
-                os.remove(temp_file_path)
+            # if os.path.exists(temp_file_path):
+            #     os.remove(temp_file_path)
             
             return redirect(url_for('prediction', prediction=prediction_class, confidence=round(prediction_value * 100), grad_cam_image=os.path.basename(grad_cam_image_path)))
         except Exception as e:
