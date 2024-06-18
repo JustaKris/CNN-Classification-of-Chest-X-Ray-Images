@@ -19,6 +19,8 @@ except Exception as e:
     logging.error(f"Error loading model: {e}")
     raise CustomException(e, sys)
 
+os.makedirs('./artifacts', exist_ok=True)
+
 def process_image(image_file):
     try:
         # Preprocess the image
