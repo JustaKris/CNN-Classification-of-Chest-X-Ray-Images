@@ -1,10 +1,10 @@
-name: Deploy to Render on Docker Image Update
+name: Deploy Chest X-Ray Classification Flask App to Render via DockerHub
 
 on:
-  push:
-    branches: [ "main", "Project-Revisit" ]
-  pull_request:
-    branches: [ "main", "Project-Revisit" ]
+  # push:
+  #   branches: [ "main", "Project-Revisit" ]
+  # pull_request:
+  #   branches: [ "main", "Project-Revisit" ]
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,10 @@ jobs:
       - name: Build Docker Image
         run: |
           docker build -t justakris/chest-xray-classification-app:latest .
-          docker push justakris/chest-xray-classification-app:latest
+
+      - name: Push Docker Image
+        run: |
+            docker push justakris/chest-xray-classification-app:latest
 
       - name: Deploy to Render
         uses: johnbeynon/render-deploy-action@v0.0.8

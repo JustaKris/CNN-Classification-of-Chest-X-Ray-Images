@@ -1,10 +1,10 @@
-name: Deploy Chest X-Ray Classification Flask App to Render
+name: Deploy Chest X-Ray Classification Streamlit App to Render
 
 on:
-  push:
-    branches: [ "main", "Project-Revisit" ]
-  pull_request:
-    branches: [ "main", "Project-Revisit" ]
+  # push:
+  #   branches: [ "main", "Project-Revisit" ]
+  # pull_request:
+  #   branches: [ "main", "Project-Revisit" ]
   workflow_dispatch:
 
 jobs:

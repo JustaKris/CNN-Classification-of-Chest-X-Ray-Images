@@ -84,8 +84,6 @@ logging.info("Streamlit app initialized.")
 
 # Add a legend/info text field
 st.markdown("""
-## About This App
-
 This application classifies chest X-ray images using a pre-trained convolutional neural network (CNN).
 The model can identify whether an X-ray image indicates the presence of three ilnesses - <b>Covid19, Tunerculosis and Pneumonia
 </b> - with <b>Normal</b> being the output if neither of the three are detected.
