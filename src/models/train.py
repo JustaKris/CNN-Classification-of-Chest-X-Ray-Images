@@ -9,18 +9,18 @@ from src.utils.evaluate import evaluate_model, plot_accuracy_loss
 from src.config import BATCH_SIZE, CLASSES, CLASS_WEIGHTS, DATASETS
 
 EPOCHS = 20
-BETA_1 = 0.85
+BETA_1 = 0.9
 METRICS = [
     SparseCategoricalAccuracy(),
     # AUC(multi_label=True)
 ]
 
 # Instantiate model
-model = MobileNetV3Transfer()
-model_path, score = get_best_model_path(".\checkpoints\MobileNetV3Transfer")
+# model = MobileNetV3Transfer()
+# model_path, score = get_best_model_path(".\checkpoints\MobileNetV3Transfer")
 
-# model = EfficientNetTransfer()
-# model_path, score = get_best_model_path(".\checkpoints\EfficientNetTransfer")
+model = EfficientNetTransfer()
+model_path, score = get_best_model_path(".\checkpoints\EfficientNetTransfer")
 
 # Compile model
 model.compile(
@@ -45,7 +45,7 @@ print(model_name)
 callbacks = [
     # CustomTensorBoardCallback(model_name),
     tensorboard_cb(model_name), 
-    checkpoint_cb(model_name, score), 
+    checkpoint_cb(model_name), 
     early_stoppings_cb,
     lr_plateau_cb,
     # lr_scheduler_cb
@@ -68,17 +68,17 @@ history = model.fit(
 
 # Eval
 evaluate_model(model, test, CLASSES.values())
-plot_accuracy_loss(history=history.history, metric="weighted_sparse_categorical_accuracy")
+# plot_accuracy_loss(history=history.history, metric="weighted_sparse_categorical_accuracy")
 
 # Fine-tuning the base model
-layers_to_train = (len(model.layers) // 5)
+layers_to_train = (len(model.layers) // 2)
 for layer in model.layers[-layers_to_train:]:
     layer.trainable = True
-print(f"Model layers for fine tuning - Last {layers_to_train}")
+print(f"Model layers for fine tuning - Bottom {layers_to_train}")
 
 # Recompile the model with a lower learning rate for fine-tuning
 model.compile(
-    optimizer=Adam(learning_rate=1e-5, beta_1=BETA_1),
+    optimizer=Adam(learning_rate=1e-4, beta_1=BETA_1),
     loss=SparseCategoricalCrossentropy(),
     metrics=METRICS,
     weighted_metrics=METRICS
