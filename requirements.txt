@@ -1,0 +1,18 @@
+numpy
+pandas
+matplotlib
+tensorflow
+seaborn
+glob2
+mlflow
+scikit-learn
+scikit-image
+keras-tuner
+opencv-python
+dill
+IPython
+Flask
+gunicorn
+streamlit
+Pillow  # This is required for image handling in Streamlit
+-e .

@@ -1,0 +1,147 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../images/background.jpg'); /* Set background image */
+    background-size: cover; /* Ensure the image covers the entire background */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    color: #fff; /* Set text color to white */
+}
+
+.container {
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); /* Add glowing effect */
+    max-width: 800px;
+    text-align: center;
+    width: 90%;
+    margin: auto; /* Center align the container */
+    overflow: hidden; /* Ensure contents do not overflow */
+}
+
+h1, h2 {
+    color: #fff; /* White text */
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+h3, h4, h5 {
+    color: #fff; /* White text */
+    margin: 5px;
+}
+
+.field {
+    margin-bottom: 15px;
+    text-align: center; /* Center align the field */
+}
+
+.field label {
+    display: block;
+    margin-bottom: 5px;
+    color: #fff; /* White text */
+}
+
+input[type="file"], input[type="text"], button {
+    box-sizing: border-box;
+    padding: 10px;
+    margin: 0;
+    border: 1px solid rgba(255, 255, 255, 0.123); /* Light border color */
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.9); /* Semi-transparent black background */
+    color: #fff; /* White text */
+    transition: border-color 0.3s ease, background-color 0.3s ease; /* Smooth transitions */
+    vertical-align: middle;
+    width: calc(100% - 24px); /* Adjusted width to fit container */
+    max-width: 100%; /* Ensure element fits within container */
+    display: inline-block; /* Ensure elements are inline */
+}
+
+input[type="file"], input[type="text"] {
+    width: calc(100% - 130px); /* Adjusted width to fit button beside */
+    margin-right: 10px; /* Add space between input and button */
+}
+
+input[type="file"]:focus, input[type="text"]:focus {
+    border-color: #007bff; /* Highlight input border when focused */
+}
+
+button {
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 120px; /* Fixed width for buttons */
+    margin-top: 10px;
+    margin-bottom: 0px;
+    vertical-align: middle;
+    display: inline-block; /* Ensure buttons are inline */
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2); /* Add glowing effect on hover */
+}
+
+a.link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 0 10px;
+    transition: color 0.3s ease;
+}
+
+a.link:hover {
+    color: #0056b3; /* Darker blue on hover */
+}
+
+.grad-cam {
+    display: block;
+    margin: 20px auto;
+    max-width: 100%;
+    max-height: 80vh; /* Ensure image does not exceed viewport height */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.separator {
+    color: white;
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+.section-divider {
+    border: none;
+    border-top: 1px solid #ddd; /* Adjust border style */
+    margin: 20px 0; /* Adjust margin for spacing */
+    padding: 0;
+}
+
+.image-container {
+    max-width: 100%; /* Ensures image does not exceed the container */
+    max-height: 70vh; /* Adjust to fit within 70% of viewport height */
+    overflow: hidden; /* Prevents images from overflowing */
+    margin: 5px auto; /* Adds margin for spacing */
+    text-align: center; /* Centers image horizontally */
+}
+
+.image-container img {
+    max-width: 100%; /* Ensure image fits within its container */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Ensures no extra space below image */
+    margin: 0 auto; /* Centers the image within its container */
+}
