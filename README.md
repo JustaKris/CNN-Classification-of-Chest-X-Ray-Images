@@ -6,7 +6,7 @@ This project is a continuation of a course project I did for my Deep Learning co
 
 All research, model training and optimization was done in Jupuyter Notebook. The research contains training of various models from scrath as well as transfer learning using a MobileNet model which was chosen due to the limited resources avaialbe to me for model training (AMD RYZEN 7 3700x CPU).
 
-Link to Notebook -> [CNN-classification-of-chest-X-Ray-Images](./notebooks/CNN classification of chest X-Ray Images.ipynb)
+Link to Notebook -> [CNN-classification-of-chest-X-Ray-Images](./notebooks/CNN-classification-of-chest-X-Ray-Images.ipynb)
 
 ### Dataset
 
