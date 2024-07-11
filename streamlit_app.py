@@ -94,8 +94,8 @@ The model can identify whether an X-ray image indicates the presence of three il
 - A Grad-CAM heatmap will be generated to highlight the regions of the image that were important for the prediction.
 
 ### Links
-- [Project Repository](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/tree/Project-Revisit)
-- [Research Notebook](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/blob/Project-Revisit/notebooks/CNN%20classification%20of%20chest%20X-Ray%20Images.ipynb)
+- [Project Repository](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images)
+- [Research Notebook](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/blob/main/notebooks/CNN%20classification%20of%20chest%20X-Ray%20Images.ipynb)
 """)
 
 # File uploader

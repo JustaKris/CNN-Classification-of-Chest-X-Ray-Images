@@ -35,7 +35,7 @@ setup(
     description='A Deep Learning project for disease recognition on chest X-Ray images.',
     long_description=open('README.md', encoding='utf-8').read(),  # Assuming you have a README.md
     long_description_content_type='text/markdown',
-    url='https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/tree/Project-Revisit',
+    url='https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images',
     packages=find_packages(),
     install_requires=get_requirements('requirements.txt'),
     setup_requires=['setuptools>=58.0.0'],

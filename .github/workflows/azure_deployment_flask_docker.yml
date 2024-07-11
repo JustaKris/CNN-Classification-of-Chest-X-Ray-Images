@@ -5,8 +5,9 @@ name: Build and deploy container app to Azure Web App - chest-xray-calssificatio
 
 on:
   push:
-    branches:
-      - Project-Revisit
+    branches: [ "main", "Project-Revisit" ]
+  pull_request:
+    branches: [ "main", "Project-Revisit" ]
   workflow_dispatch:
 
 jobs:
