@@ -45,7 +45,7 @@ There is also a version of the app which uses Streamlit instead of Flask but I d
     The image is then transformed in order for it to be passed to the trained model. The Tensorflow `imagenet` preprocessing function is used to keep the format consistent with what the model expects.
     
 3. Model Training: 
-    The transfer learning approach provided the best results and a MobileNetV3 model is what is used in the app. For details on the model training methodology, please refer to the jnotebook.
+    The transfer learning approach provided the best results and a MobileNetV3 model is what is used in the app. For details on the model training methodology, please refer to the notebook.
 
 4. Flask App:
     A Flask app houses the user interface where input is received and passed to the prediction pipeline. The app then displays the resulting outcome. It also displayes the original image with an overlayed heatmap of model activations, signifiyng what the model is "looking" at.
