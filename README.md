@@ -1,6 +1,6 @@
 # Chest X-Ray Image Classification
 
-This project is a continuation of a course project I did for my Deep Learning course in SoftUni. I wanted to adapt my work and build an app around it which would use the best performing model to be able to accept images via user input and generate predictions along with an overlayed model activations heatmap (GRAD_Cam). One of the main goals was to be able to deploy this app to one of the cloud computing platform. 
+This project is a continuation of a course project I did for my Deep Learning course in SoftUni. I wanted to adapt my work and build an app around it which would use the best performing model to be able to accept images via user input and generate predictions along with an overlaid model activations heatmap (GRAD_Cam). One of the main goals was to be able to deploy this app to one of the cloud computing platform. 
 
 ## Jupyter Notebook
 
