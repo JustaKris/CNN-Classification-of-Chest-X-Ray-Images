@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_05065a70d01340e3a4f196deb79f2d41 }}/chest-xray-classification-app:${{ github.sha }}
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_05065a70d01340e3a4f196deb79f2d41 }}/chest-xray-classification-app:latest
         file: ./Dockerfile
 
   deploy:
@@ -48,4 +48,4 @@ jobs:
         app-name: 'chest-xray-calssification'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_8f1e35a55a92401bafe2faa43dc2a851 }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_05065a70d01340e3a4f196deb79f2d41 }}/chest-xray-classification-app:${{ github.sha }}'
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_05065a70d01340e3a4f196deb79f2d41 }}/chest-xray-classification-app:latest'
