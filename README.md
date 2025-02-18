@@ -32,6 +32,8 @@ The predictor app was deployed on Aruze using a Docker container with a GitHub W
 
 Azure Link -> [https://chest-xray-calssification.azurewebsites.net/](https://chest-xray-calssification.azurewebsites.net/)
 
+The web app is using a free Azure plan so it may take a couple of minutes to load if it has not been in use recently.
+
 <!-- ### Render Deployment
 
 There is also a version of the app which uses Streamlit instead of Flask but I don't find it to be as flexible. There is a deployment workflow available for it which instead deploys that version of the app to Render. -->
