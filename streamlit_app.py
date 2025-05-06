@@ -106,7 +106,7 @@ image_url = st.text_input("Or enter the URL of a chest X-ray image...")
 
 # Load the model
 try:
-    model_path = get_best_model_path("./saved_models")[0]
+    model_path = get_best_model_path("./models")[0]
     model = load_model(model_path)
 except Exception as e:
     logging.error(f"Error loading model: {e}")

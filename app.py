@@ -12,7 +12,7 @@ app = Flask(__name__, template_folder='templates')
 
 # Load the model during application startup
 try:
-    model_path, _ = get_best_model_path("./saved_models")
+    model_path, _ = get_best_model_path("./models")
     model = load_model(model_path)
     logging.info(f"Model successfully loaded from {model_path}")
 except Exception as e:

@@ -1,6 +1,5 @@
 # The data consists of almost 2GB of X-Ray images
 data/*
-commands.sh
 notebooks/cam.jpg
 
 # Logs
