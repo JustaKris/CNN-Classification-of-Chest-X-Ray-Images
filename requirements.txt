@@ -15,5 +15,8 @@ IPython
 Flask
 gunicorn
 streamlit
-Pillow  # This is required for image handling in Streamlit
+Pillow
+torch
+torchvision
+transformers
 -e .

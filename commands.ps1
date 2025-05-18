@@ -29,7 +29,6 @@ docker push justakris/chest-xray-classification-app:latest
 
 # Interacting with container
 docker exec -it chest-xray-classification bash
-ls -l  # List all
 
 # GitHub Actions and deployment to Render 
 # Render Key -> rnd_FTBxo7rYaRqdbL9frCXpSyFuBfsg
