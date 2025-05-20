@@ -1,7 +1,11 @@
-# Environment setup
+# Environment setup - Anaconda
 conda env list
 conda create -p venv python=3.11 -y
 conda activate venv/
+
+# Environment setup - Python 3.11
+python3.11 -m venv venv
+venv\Scripts\activate
 
 # Run app locally
 pip install -r requirements.txt
