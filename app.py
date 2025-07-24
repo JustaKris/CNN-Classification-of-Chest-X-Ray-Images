@@ -17,7 +17,7 @@ try:
     logging.info(f"Model successfully loaded from {model_path}")
 except Exception as e:
     logging.error(f"Error loading model: {e}")
-    raise CustomException(e, sys)
+    raise CustomException(e, sys) # type: ignore
 
 os.makedirs('./artifacts', exist_ok=True)
 
@@ -46,7 +46,7 @@ def process_image(image_file):
         return prediction_class, prediction_value, grad_cam_image_path
     except Exception as e:
         logging.error(f"Error processing image: {e}")
-        raise CustomException(e, sys)
+        raise CustomException(e, sys) # type: ignore
 
 @app.route('/artifacts/<filename>')
 def send_file(filename):
