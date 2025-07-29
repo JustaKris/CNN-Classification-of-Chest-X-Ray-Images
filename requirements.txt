@@ -20,4 +20,3 @@ Pillow
 torch
 torchvision
 transformers
--e .

@@ -8,7 +8,9 @@ python3.11 -m venv venv
 venv\Scripts\activate
 
 # Run app locally
+pip install --upgrade pip setuptools
 pip install -r requirements.txt
+pip install -e .
 python app.py  # localhost:5000
 
 # Tensorboard

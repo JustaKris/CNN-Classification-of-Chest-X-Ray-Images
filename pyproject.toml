@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "X-Ray-Image-Classifier-App"
+version = "0.0.1"
+description = "A Deep Learning project for disease recognition on chest X-Ray images."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "Kristiyan Bonev", email = "k.s.bonev@gmail.com" }
+]
+urls = {"Homepage" = "https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images"}
+dependencies = [
+    "ipykernel",
+    "kaggle",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "tensorflow",
+    "seaborn",
+    "glob2",
+    "mlflow",
+    "scikit-learn",
+    "scikit-image",
+    "keras-tuner",
+    "opencv-python",
+    "dill",
+    "IPython",
+    "Flask",
+    "gunicorn",
+    "streamlit",
+    "Pillow",
+    "torch",
+    "torchvision",
+    "transformers"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+
+[project.scripts]
+x-ray_image_classifier = "app:main"
+[project.optional-dependencies]
+test = []
