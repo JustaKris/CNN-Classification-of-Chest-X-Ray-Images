@@ -1,0 +1,70 @@
+import torch
+from PIL import Image
+from transformers import CLIPProcessor, CLIPModel
+from src.logger import logging
+
+# CLIP text descriptions for zero-shot classification
+CANDIDATE_LABELS = [
+    "a chest X-ray",
+    "a CT scan",
+    "a natural photograph",
+    "a painting or drawing",
+    "a selfie or portrait",
+    "a screenshot of a computer screen",
+    "an MRI scan",
+    "a document or text",
+]
+
+CHEST_XRAY_LABEL = "a chest X-ray"
+CONFIDENCE_THRESHOLD = 0.5
+
+
+def load_clip_model(cache_dir="./models"):
+    """Load the CLIP model and processor, returning them as a tuple."""
+    logging.info("Loading CLIP model for image type recognition...")
+    model = CLIPModel.from_pretrained(
+        "openai/clip-vit-base-patch32", cache_dir=cache_dir
+    )
+    processor = CLIPProcessor.from_pretrained(
+        "openai/clip-vit-base-patch32", cache_dir=cache_dir
+    )
+    logging.info("CLIP model loaded successfully.")
+    return model, processor
+
+
+def classify_image(image_path, clip_model, clip_processor):
+    """
+    Classify an image using CLIP zero-shot classification.
+
+    Args:
+        image_path: File path (str) or file-like object of the image.
+        clip_model: The loaded CLIP model.
+        clip_processor: The loaded CLIP processor.
+
+    Returns:
+        tuple: (top_label, confidence, is_chest_xray)
+    """
+    image = Image.open(image_path).convert("RGB")
+
+    inputs = clip_processor(
+        text=CANDIDATE_LABELS, images=image, return_tensors="pt", padding=True
+    )
+
+    with torch.no_grad():
+        outputs = clip_model(**inputs)
+
+    logits_per_image = outputs.logits_per_image
+    probs = logits_per_image.softmax(dim=1)
+
+    top_index = int(torch.argmax(probs))
+    top_label = CANDIDATE_LABELS[top_index]
+    confidence = probs[0, top_index].item()
+
+    is_chest_xray = top_label == CHEST_XRAY_LABEL and confidence >= CONFIDENCE_THRESHOLD
+
+    logging.info(
+        f"Image classification: '{top_label}' (confidence: {confidence:.4f}), "
+        f"is_chest_xray={is_chest_xray}"
+    )
+
+    return top_label, confidence, is_chest_xray

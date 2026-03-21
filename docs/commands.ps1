@@ -1,10 +1,16 @@
-# Environment setup
+# Environment setup - Anaconda
 conda env list
 conda create -p venv python=3.11 -y
 conda activate venv/
 
+# Environment setup - Python 3.11
+python3.11 -m venv venv
+venv\Scripts\activate
+
 # Run app locally
+pip install --upgrade pip setuptools
 pip install -r requirements.txt
+pip install -e .
 python app.py  # localhost:5000
 
 # Tensorboard
@@ -29,7 +35,6 @@ docker push justakris/chest-xray-classification-app:latest
 
 # Interacting with container
 docker exec -it chest-xray-classification bash
-ls -l  # List all
 
 # GitHub Actions and deployment to Render 
 # Render Key -> rnd_FTBxo7rYaRqdbL9frCXpSyFuBfsg
