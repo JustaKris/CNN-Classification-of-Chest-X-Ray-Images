@@ -1,46 +1,267 @@
-[tool.poetry]
+[project]
 name = "x-ray-image-classifier-app"
-version = "0.0.1"
-description = "A Deep Learning project for disease recognition on chest X-Ray images."
-authors = ["Kristiyan Bonev <k.s.bonev@gmail.com>"]
+version = "0.1.0"
+description = "A Deep Learning project for disease recognition on chest X-Ray images using CNN and Transfer Learning."
+license = { text = "MIT" }
 readme = "README.md"
-repository = "https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent"
+requires-python = ">=3.11,<3.14"
+keywords = [
+    "deep-learning",
+    "cnn",
+    "chest-x-ray",
+    "image-classification",
+    "transfer-learning",
+    "tensorflow",
+    "keras",
+    "flask",
+    "grad-cam",
+    "medical-imaging",
 ]
-package-mode = false
+authors = [
+    {name = "Kristiyan Bonev", email = "k.s.bonev@gmail.com"},
+]
+maintainers = [
+    {name = "Kristiyan Bonev", email = "k.s.bonev@gmail.com"},
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Framework :: Flask",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    # Deep Learning Frameworks
+    "tensorflow>=2.18.0,<3.0.0",
+    "torch>=2.6.0",                 # 2.6.0 minimum due to CVE-2025-32434
+    "transformers>=4.40.0,<5.0.0",  # CLIP model for image type recognition
 
-[tool.poetry.dependencies]
-python = ">=3.11,<3.15"
-ipykernel = "*"
-kaggle = "*"
-numpy = "*"
-pandas = "*"
-matplotlib = "*"
-tensorflow = "*"
-seaborn = "*"
-glob2 = "*"
-mlflow = "*"
-scikit-learn = "*"
-scikit-image = "*"
-keras-tuner = "*"
-opencv-python = "*"
-dill = "*"
-IPython = "*"
-Flask = "*"
-gunicorn = "*"
-streamlit = "*"
-Pillow = "*"
-torch = "*"
-torchvision = "*"
-transformers = "*"
+    # Data Processing & Visualization
+    "numpy>=1.26.0,<3.0.0",
+    "matplotlib>=3.8.0,<4.0.0",
+    "Pillow>=10.0.0,<12.0.0",
 
-[tool.poetry.scripts]
-x-ray-image-classifier = "app:main"
+    # Web Framework
+    "Flask>=3.0.0,<4.0.0",
+    "gunicorn>=21.0.0,<24.0.0",
 
+    # Utilities
+    "dill>=0.3.7,<1.0.0",
+    "requests>=2.31.0,<3.0.0",
+    "IPython>=8.0.0,<10.0.0",
+]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+# [project.urls]
+# Repository = "https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images"
+
+# Optional dependency groups
+[dependency-groups]
+# Development tools (linting, formatting, type checking, security)
+dev = [
+    "ruff>=0.6.0,<1.0.0",
+    "mypy>=1.13.0,<2.0.0",
+    "pip-audit>=2.9.0,<3.0.0",
+    "bandit>=1.8.0,<2.0.0",
+    "pymarkdownlnt>=0.9.17,<1.0.0",
+    "types-requests>=2.31.0",
+]
+
+# Jupyter notebooks, model training, experiment tracking
+notebooks = [
+    "ipykernel>=7.0.0,<8.0.0",
+    "kaggle>=1.6.0,<2.0.0",
+    "pandas>=2.0.0,<3.0.0",
+    "seaborn>=0.13.0,<0.14.0",
+    "mlflow>=2.10.0,<3.0.0",
+    "scikit-learn>=1.4.0,<2.0.0",
+    "scikit-image>=0.22.0,<1.0.0",
+    "keras-tuner>=1.4.0,<2.0.0",
+    "opencv-python>=4.9.0,<5.0.0",
+    "torchvision>=0.18.0",
+]
+
+# Streamlit alternative frontend
+streamlit = [
+    "streamlit>=1.35.0,<2.0.0",
+]
+
+# Documentation site generation
+docs = [
+    "mkdocs>=1.6.0,<2.0.0",
+    "mkdocs-material>=9.5.0,<10.0.0",
+    "mkdocstrings[python]>=0.27.0,<1.0.0",
+    "pymdown-extensions>=10.0.0,<11.0.0",
+]
+
+# PyTorch with CUDA (massive, only for local GPU development)
+# torch-gpu = [
+#     "torch>=2.9.0,<3.0.0",
+#     "torchvision>=0.19.0,<0.20.0",
+#     "torchaudio>=2.9.0,<3.0.0",
+# ]
+
+# Future package structure (uncomment when transitioning to an installable package)
+# [build-system]
+# requires = ["hatchling"]
+# build-backend = "hatchling.build"
+
+# [tool.hatch.build.targets.wheel]
+# packages = ["src"]
+
+# [project.scripts]
+# x-ray-classifier = "app:main"
+
+# Ruff configuration
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+fix = true
+exclude = [
+    ".git",
+    ".tox",
+    "dist",
+    "build",
+    "*.egg",
+    "reports",
+    "site",
+    ".venv",
+    "venv",
+    "notebooks",
+    ".pytest_cache",
+    "__pycache__",
+]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "C4", "D"]  # Includes docstring checks
+ignore = [
+    "E501",   # Line too long (handled by formatter)
+    "B008",   # Function call in argument defaults
+    "B904",   # Exception chaining (use `from` for clarity)
+    "D203",   # 1 blank line before class (conflicts with D211)
+    "D213",   # Multi-line docstring summary second line (conflicts with D212)
+    "D205",   # 1 blank line between summary and description (too strict)
+    "D415",   # First line punctuation (docstrings can be phrases)
+    "D102",   # Missing docstring in public method (too verbose for simple methods)
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+# mypy configuration
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = false
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = false
+no_implicit_optional = false
+warn_redundant_casts = false
+warn_unused_ignores = false
+warn_no_return = false
+strict_optional = false
+ignore_missing_imports = true
+
+# Pytest configuration
+[tool.pytest.ini_options]
+# Test discovery patterns
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+# Test paths
+testpaths = ["tests"]
+
+# Additional options
+addopts = [
+    "--verbose",
+    "--cov=src",
+    "--cov-report=term-missing",
+    "--cov-report=html:reports/coverage/html",
+    "--cov-report=xml:reports/coverage/coverage.xml",
+    "--cov-fail-under=60",
+]
+
+# Markers for categorizing tests
+markers = [
+    "unit: Unit tests for individual functions",
+    "integration: Integration tests for API endpoints",
+    "slow: Tests that take longer to run",
+    "requires_model: Tests that require ML model loading",
+]
+
+# Ignore directories
+norecursedirs = [
+    ".git",
+    ".tox",
+    "dist",
+    "build",
+    "*.egg",
+    "reports",
+    "site",
+    ".venv",
+    "venv",
+    ".pytest_cache",
+    "__pycache__",
+]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/.venv/*",
+    "*/notebooks/*",
+]
+data_file = "reports/coverage/.coverage"
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.coverage.html]
+directory = "reports/coverage/html"
+
+[tool.coverage.xml]
+output = "reports/coverage/coverage.xml"
+
+[tool.bandit]
+exclude_dirs = [
+    ".venv",
+    "venv",
+    "notebooks",
+    "site",
+    ".pytest_cache",
+    "__pycache__",
+]
+# B101: assert_used - Asserts are acceptable in test/dev code
+# B104: hardcoded_bind_all_interfaces - Dev server binds are intentional (0.0.0.0 for containers)
+# B108: hardcoded_tmp_directory - Temp paths are controlled
+# B110: try_except_pass - Intentional silent failures in data parsing/cleanup
+skips = ["B101", "B104", "B108", "B110"]
+
+# Markdown linting
+[tool.pymarkdown]
+plugins.md013.enabled = false  # Disable line length check (tables/code blocks can be long)
+plugins.md013.line_length = 120  # Set reasonable line length if enabled
+plugins.md033.enabled = false  # Allow inline HTML (useful for badges, images)
+plugins.md036.enabled = false  # Allow emphasis as pseudo-headings (common in docs)
+plugins.md024.enabled = false  # Allow duplicate headings (useful for examples)
+plugins.md040.enabled = false  # Don't require language for all code blocks (examples may not have)
+plugins.md031.enabled = false  # Allow code blocks without surrounding blank lines (nested examples)
+extensions.front-matter.enabled = true  # Support YAML front matter
+extensions.tables.enabled = true  # Enable table support
