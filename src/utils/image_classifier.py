@@ -1,7 +1,12 @@
+"""CLIP-based zero-shot image type classifier for input validation."""
+
 import torch
 from PIL import Image
-from transformers import CLIPProcessor, CLIPModel
-from src.logger import logging
+from transformers import CLIPModel, CLIPProcessor
+
+from src.logger import get_logger
+
+logger = get_logger(__name__)
 
 # CLIP text descriptions for zero-shot classification
 CANDIDATE_LABELS = [
@@ -21,20 +26,15 @@ CONFIDENCE_THRESHOLD = 0.5
 
 def load_clip_model(cache_dir="./models"):
     """Load the CLIP model and processor, returning them as a tuple."""
-    logging.info("Loading CLIP model for image type recognition...")
-    model = CLIPModel.from_pretrained(
-        "openai/clip-vit-base-patch32", cache_dir=cache_dir
-    )
-    processor = CLIPProcessor.from_pretrained(
-        "openai/clip-vit-base-patch32", cache_dir=cache_dir
-    )
-    logging.info("CLIP model loaded successfully.")
+    logger.info("Loading CLIP model for image type recognition...")
+    model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32", cache_dir=cache_dir)
+    processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32", cache_dir=cache_dir)
+    logger.info("CLIP model loaded successfully.")
     return model, processor
 
 
 def classify_image(image_path, clip_model, clip_processor):
-    """
-    Classify an image using CLIP zero-shot classification.
+    """Classify an image using CLIP zero-shot classification.
 
     Args:
         image_path: File path (str) or file-like object of the image.
@@ -46,9 +46,7 @@ def classify_image(image_path, clip_model, clip_processor):
     """
     image = Image.open(image_path).convert("RGB")
 
-    inputs = clip_processor(
-        text=CANDIDATE_LABELS, images=image, return_tensors="pt", padding=True
-    )
+    inputs = clip_processor(text=CANDIDATE_LABELS, images=image, return_tensors="pt", padding=True)
 
     with torch.no_grad():
         outputs = clip_model(**inputs)
@@ -62,9 +60,11 @@ def classify_image(image_path, clip_model, clip_processor):
 
     is_chest_xray = top_label == CHEST_XRAY_LABEL and confidence >= CONFIDENCE_THRESHOLD
 
-    logging.info(
-        f"Image classification: '{top_label}' (confidence: {confidence:.4f}), "
-        f"is_chest_xray={is_chest_xray}"
+    logger.info(
+        "Image classification: '%s' (confidence: %.4f), is_chest_xray=%s",
+        top_label,
+        confidence,
+        is_chest_xray,
     )
 
     return top_label, confidence, is_chest_xray

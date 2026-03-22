@@ -1,30 +1,35 @@
+"""General-purpose utility functions for image loading, preprocessing, and model management."""
+
 import os
-import sys
+from datetime import datetime
+from io import BytesIO
+
 import dill
-import requests
 import numpy as np
+import requests  # type: ignore[import-untyped]
 import tensorflow as tf
 from PIL import Image
-from io import BytesIO
-from datetime import datetime
+from tensorflow.keras.applications.imagenet_utils import preprocess_input  # type: ignore
+
 from src.config import COLOR_MODE, IMAGE_SIZE
-from tensorflow.keras.applications.imagenet_utils import preprocess_input # type: ignore
 from src.exception import CustomException
-from src.logger import logging
+from src.logger import get_logger
+
+logger = get_logger(__name__)
 
 
-# General purpose date and time tags
 def get_date():
+    """Return the current date as a YYYY.MM.DD string."""
     return datetime.now().strftime("%Y.%m.%d")
 
 
 def get_time():
+    """Return the current time as an HH-MM string."""
     return datetime.now().strftime("%H-%M")
 
 
-def load_image_from_url(url, save_dir='./artifacts', save_filename='downloaded_image.jpg'):
-    """
-    Downloads an image from a URL and saves it locally.
+def load_image_from_url(url, save_dir="./artifacts", save_filename="downloaded_image.jpg"):
+    """Downloads an image from a URL and saves it locally.
 
     Args:
         url (str): The URL of the image to download.
@@ -36,7 +41,8 @@ def load_image_from_url(url, save_dir='./artifacts', save_filename='downloaded_i
     """
     try:
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+        }
         response = requests.get(url, headers=headers, stream=True)
 
         if response.status_code == 200:
@@ -49,23 +55,23 @@ def load_image_from_url(url, save_dir='./artifacts', save_filename='downloaded_i
             # Read the image data into memory
             image_data = BytesIO(response.content)
             # Save the image locally
-            with open(save_path, 'wb') as f:
+            with open(save_path, "wb") as f:
                 f.write(image_data.getbuffer())
 
-            logging.info(f"Image downloaded and saved to {save_path}")
+            logger.info("Image downloaded and saved to %s", save_path)
             return save_path
         else:
             raise requests.exceptions.RequestException(
-                f"Failed to download image. Status code: {response.status_code}")
+                f"Failed to download image. Status code: {response.status_code}"
+            )
 
     except requests.exceptions.RequestException as e:
-        logging.error(f"Error downloading image: {e}")
+        logger.error("Error downloading image: %s", e)
         return None
 
 
 def preprocess_image(image_file, target_size=IMAGE_SIZE):
-    """
-    Preprocesses an image file for input to a model.
+    """Preprocesses an image file for input to a model.
 
     Args:
         image_file (str): The file path or file-like object of the image.
@@ -80,25 +86,24 @@ def preprocess_image(image_file, target_size=IMAGE_SIZE):
             image = image.convert(COLOR_MODE.upper())
         image = image.resize(target_size)  # Resize to match the model input
         image = np.array(image)  # Convert to numpy array
-        
+
         # Ensure that the image has 3 channels (RGB)
         if len(image.shape) == 2:
             image = np.stack((image,) * 3, axis=-1)
         elif image.shape[2] == 1:
             image = np.concatenate((image,) * 3, axis=-1)
-        
+
         image = preprocess_input(image)  # Preprocess the image according to ImageNet standards
         image = np.expand_dims(image, axis=0)  # Add batch dimension
-        logging.info("Image preprocessed successfully")
+        logger.info("Image preprocessed successfully")
         return image
     except Exception as e:
-        logging.error(f"Error preprocessing image: {e}")
+        logger.error("Error preprocessing image: %s", e)
         raise CustomException(e)
 
 
 def get_best_model_path(directory="./checkpoints"):
-    """
-    Get the path of the best model file within the specified directory based on the filename.
+    """Get the path of the best model file within the specified directory based on the filename.
 
     Args:
         directory (str): The directory to search for model files. Defaults to "./checkpoints".
@@ -107,11 +112,11 @@ def get_best_model_path(directory="./checkpoints"):
         Tuple[str, float]: A tuple containing the path of the best model file and its corresponding score.
     """
     try:
-        best_score = float('-inf')
+        best_score = float("-inf")
         best_model_path = None
 
         # Iterate through all files and subdirectories in the specified directory
-        for root, dirs, files in os.walk(directory):
+        for root, _dirs, files in os.walk(directory):
             for file in files:
                 # Check if the file is a model file
                 if file.endswith(".keras"):
@@ -124,16 +129,15 @@ def get_best_model_path(directory="./checkpoints"):
                             best_score = score
                             best_model_path = os.path.join(root, file)
 
-        logging.info(f"Best model found: {best_model_path} with score {best_score}")
+        logger.info("Best model found: %s with score %s", best_model_path, best_score)
         return best_model_path, best_score
     except Exception as e:
-        logging.error(f"Error finding best model: {e}")
+        logger.error("Error finding best model: %s", e)
         raise CustomException(e)
 
 
 def load_model(model_path):
-    """
-    Loads a TensorFlow Keras model from the specified path.
+    """Loads a TensorFlow Keras model from the specified path.
 
     Args:
         model_path (str): The path to the model file.
@@ -143,41 +147,39 @@ def load_model(model_path):
     """
     try:
         loaded_model = tf.keras.models.load_model(model_path)
-        logging.info("Model successfully loaded.")
+        logger.info("Model successfully loaded.")
         return loaded_model
     except Exception as e:
-        logging.error(f"Error loading model from {model_path}: {e}")
+        logger.error("Error loading model from %s: %s", model_path, e)
         raise CustomException(e)
 
 
-def save_pkl(obj, filename='default_name.pkl'):
-    """
-    Save an object to a pickle file.
+def save_pkl(obj, filename="default_name.pkl"):
+    """Save an object to a pickle file.
 
     Args:
         obj (object): The object to be saved.
         filename (str): The filename to save the object.
     """
+    artifacts_dir = "./artifacts"
     try:
         # Ensure the artifacts directory exists
-        dir = "./artifacts"
-        os.makedirs(dir, exist_ok=True)  # Create the directory if it doesn't exist
+        os.makedirs(artifacts_dir, exist_ok=True)  # Create the directory if it doesn't exist
 
         # File path
-        file_path = os.path.join(dir, filename)
-        
+        file_path = os.path.join(artifacts_dir, filename)
+
         # Save the object
-        with open(file_path, 'wb') as f:
+        with open(file_path, "wb") as f:
             dill.dump(obj, f)
-        logging.info(f"Object saved to {file_path}")
+        logger.info("Object saved to %s", file_path)
     except Exception as e:
-        logging.error(f"Error saving object to {filename}: {e}")
+        logger.error("Error saving object to %s: %s", filename, e)
         raise CustomException(e)
 
 
-def load_pkl(filename='default_name.pkl'):
-    """
-    Load an object from a pickle file.
+def load_pkl(filename="default_name.pkl"):
+    """Load an object from a pickle file.
 
     Args:
         filename (str): The filename to load the object from.
@@ -185,20 +187,20 @@ def load_pkl(filename='default_name.pkl'):
     Returns:
         object: The loaded object.
     """
+    artifacts_dir = "./artifacts"
     try:
-        dir = "./artifacts"
-        file_path = os.path.join(dir, filename)
-        
+        file_path = os.path.join(artifacts_dir, filename)
+
         # Load the object
-        with open(file_path, 'rb') as f:
+        with open(file_path, "rb") as f:
             loaded_object = dill.load(f)
-        logging.info(f"Object loaded from {file_path}")
+        logger.info("Object loaded from %s", file_path)
         return loaded_object
     except FileNotFoundError:
-        logging.error(f"File {filename} not found in {dir}.")
+        logger.error("File %s not found in %s.", filename, artifacts_dir)
         return None
     except Exception as e:
-        logging.error(f"Error loading object from {filename}: {e}")
+        logger.error("Error loading object from %s: %s", filename, e)
         raise CustomException(e)
 
 

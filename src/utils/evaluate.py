@@ -1,22 +1,24 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.metrics import classification_report, confusion_matrix
-from src.config import CLASSES
+"""Model evaluation utilities: accuracy/loss plots, confusion matrix, classification report."""
 
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.metrics import classification_report, confusion_matrix
+
+from src.config import CLASSES
 
 CLASS_NAMES = list(CLASSES.values())
 
-# Accuracy and loss training plots per epoch
-def plot_accuracy_loss(history, metric="accuracy"):
 
-    fig = plt.figure(figsize=(12,5))
+def plot_accuracy_loss(history, metric="accuracy"):
+    """Plot training vs. validation accuracy and loss curves."""
+    plt.figure(figsize=(12, 5))
 
     # Plot accuracy
     plt.subplot(221)
     # plt.plot(history.history[METRIC],'o-', label = "train")
     # plt.plot(history.history['val_' + METRIC], 'o-', label = "val")
-    plt.plot(history[metric],'o-', label = "train")
-    plt.plot(history['val_' + metric], 'o-', label = "val")
+    plt.plot(history[metric], "o-", label="train")
+    plt.plot(history["val_" + metric], "o-", label="val")
     plt.title("train vs val accuracy")
     plt.ylabel(metric)
     plt.xlabel("epochs")
@@ -26,8 +28,8 @@ def plot_accuracy_loss(history, metric="accuracy"):
     plt.subplot(222)
     # plt.plot(history.history['loss'],'o-', label = "train")
     # plt.plot(history.history['val_loss'], 'o-', label = "val")
-    plt.plot(history['loss'],'o-', label = "train")
-    plt.plot(history['val_loss'], 'o-', label = "val")
+    plt.plot(history["loss"], "o-", label="train")
+    plt.plot(history["val_loss"], "o-", label="val")
     plt.title("train vs val loss")
     plt.ylabel("loss")
     plt.xlabel("epochs")
@@ -37,6 +39,7 @@ def plot_accuracy_loss(history, metric="accuracy"):
 
 
 def print_confusion_matrix(cm, labels):
+    """Print a formatted confusion matrix to the console."""
     column_width = max([len(x) for x in labels] + [5])  # 5 is a buffer for numbers
 
     # Print header
@@ -54,7 +57,7 @@ def print_confusion_matrix(cm, labels):
 
 
 def evaluate_model(model, dataset, class_names=CLASS_NAMES):
-    # Generate predictions
+    """Run predictions on a dataset and print classification report and confusion matrix."""
     true = []
     pred = []
     for images, labels in dataset:

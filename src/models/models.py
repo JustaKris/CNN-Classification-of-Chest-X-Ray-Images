@@ -1,11 +1,21 @@
-from tensorflow.keras.applications import EfficientNetB0, MobileNetV3Small # type: ignore
-from tensorflow.keras.models import Model # type: ignore
-from tensorflow.keras.layers import BatchNormalization, Dense, Dropout, Flatten, GlobalAveragePooling2D # type: ignore
-from src.config import INPUT_SHAPE, CLASSES
+"""Transfer learning model architectures for chest X-ray classification."""
+
+from tensorflow.keras.applications import EfficientNetB0, MobileNetV3Small  # type: ignore
+from tensorflow.keras.layers import (  # type: ignore
+    BatchNormalization,
+    Dense,
+    Dropout,
+    Flatten,
+    GlobalAveragePooling2D,
+)
+from tensorflow.keras.models import Model  # type: ignore
+
+from src.config import CLASSES, INPUT_SHAPE
 
 
 def MobileNetV3Transfer():
-    base_model = MobileNetV3Small(weights='imagenet', include_top=False, input_shape=INPUT_SHAPE)
+    """Build a MobileNetV3Small-based transfer learning model."""
+    base_model = MobileNetV3Small(weights="imagenet", include_top=False, input_shape=INPUT_SHAPE)
 
     base_model.trainable = False  # Freeze the base model initially
 
@@ -13,19 +23,19 @@ def MobileNetV3Transfer():
     x = Flatten()(x)
     # x = BatchNormalization()(x)
 
-    x = Dense(512, activation='relu')(x)
+    x = Dense(512, activation="relu")(x)
     # x = BatchNormalization()(x)
     x = Dropout(0.5)(x)
 
-    x = Dense(256, activation='relu')(x)
+    x = Dense(256, activation="relu")(x)
     # x = BatchNormalization()(x)
     x = Dropout(0.3)(x)
 
-    x = Dense(128, activation='relu')(x)
+    x = Dense(128, activation="relu")(x)
     # x = BatchNormalization()(x)
     x = Dropout(0.2)(x)
 
-    x = Dense(64, activation='relu')(x)
+    x = Dense(64, activation="relu")(x)
     # x = BatchNormalization()(x)
     x = Dropout(0.1)(x)
 
@@ -36,31 +46,32 @@ def MobileNetV3Transfer():
 
 
 def EfficientNetTransfer():
-    base_model = EfficientNetB0(weights='imagenet', include_top=False, input_shape=INPUT_SHAPE)
-    
+    """Build an EfficientNetB0-based transfer learning model."""
+    base_model = EfficientNetB0(weights="imagenet", include_top=False, input_shape=INPUT_SHAPE)
+
     base_model.trainable = False  # Freeze the base model initially
 
     x = GlobalAveragePooling2D()(base_model.output)
     x = Flatten()(x)
     # x = BatchNormalization()(x)
 
-    x = Dense(512, activation='relu')(x)
+    x = Dense(512, activation="relu")(x)
     x = Dropout(0.25)(x)
     # x = BatchNormalization()(x)
 
-    x = Dense(256, activation='relu')(x)
+    x = Dense(256, activation="relu")(x)
     x = Dropout(0.15)(x)
     # x = BatchNormalization()(x)
 
-    x = Dense(128, activation='relu')(x)
+    x = Dense(128, activation="relu")(x)
     x = Dropout(0.1)(x)
     # x = BatchNormalization()(x)
 
-    x = Dense(64, activation='relu')(x)
+    x = Dense(64, activation="relu")(x)
     x = Dropout(0.05)(x)
     x = BatchNormalization()(x)
 
-    output = Dense(len(CLASSES), activation='softmax')(x)
+    output = Dense(len(CLASSES), activation="softmax")(x)
 
     model = Model(inputs=base_model.input, outputs=output, name="EfficientNetTransfer")
     return model

@@ -1,34 +1,42 @@
----
+# Project commands — x-ray-image-classifier-app
 
-# Project commands — dt-rally-speeches-nlp
+This file contains the most relevant commands for working with this repository. It focuses on local development: uv environment setup, running Jupyter notebooks, testing and code-quality commands, and common Git workflows.
 
-This file contains the most relevant commands for working with this repository. It focuses on local development: Poetry environment setup, running Jupyter notebooks, basic testing and code-quality commands, and common Git workflows.
+## uv / environment
 
-## Poetry / environment
-
-Install Poetry (if not already installed):
+Install uv (if not already installed):
 
 ```powershell
-(Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+# Windows (PowerShell)
+irm https://astral.sh/uv/install.ps1 | iex
+
+# macOS / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-Initialize (if you haven't already) — the project is named `dt-rally-speeches-nlp`:
+Install all dependencies from `pyproject.toml` (creates `.venv` automatically):
 
 ```powershell
-poetry init --name dt-rally-speeches-nlp --description "NLP exercise on a dataset of rally speeches from Donald Trump's first presidential campaign." --author "Kristiyan Bonev" --python ">=3.10,<3.15"
+uv sync
 ```
 
-Add the core dependencies used by the notebooks and a few developer tools:
+Install with specific dependency groups:
 
 ```powershell
-poetry add numpy pandas matplotlib seaborn wordcloud scikit-learn transformers torch nltk tqdm
-poetry add --group dev pytest black flake8 ipykernel
-```
+# Production only (no dev tools)
+uv sync --no-dev
 
-Install from `pyproject.toml`:
+# With notebook/training dependencies
+uv sync --group notebooks
 
-```powershell
-poetry install
+# With Streamlit frontend
+uv sync --group streamlit
+
+# With documentation tools
+uv sync --group docs
+
+# Everything
+uv sync --all-groups
 ```
 
 Activate the virtual environment (PowerShell):
@@ -37,51 +45,102 @@ Activate the virtual environment (PowerShell):
 & ".venv\Scripts\Activate.ps1"
 ```
 
-Or use Poetry's shell:
+Add a new dependency:
 
 ```powershell
-poetry shell
+# Add to main dependencies
+uv add some-package
+
+# Add to a specific group
+uv add --group dev some-dev-tool
+uv add --group notebooks some-notebook-tool
 ```
 
 Notes:
+
 - If you want GPU-accelerated PyTorch, follow the official PyTorch install selector and install the appropriate `torch` wheel for your CUDA version.
 - Transformers will download pretrained models on first run — make sure you have disk space.
 
 ## Jupyter / notebooks
 
-Start Jupyter Lab (recommended):
+Start Jupyter Lab (requires notebooks group):
 
 ```powershell
-poetry run jupyter lab
+uv run --group notebooks jupyter lab
 ```
 
 Or the classic notebook UI:
 
 ```powershell
-poetry run jupyter notebook
+uv run --group notebooks jupyter notebook
 ```
 
-Open the notebooks in `notebooks/` and run cells top-to-bottom. If you see NLTK missing data errors, run once in a cell:
-
-```python
-import nltk
-nltk.download('punkt')
-nltk.download('stopwords')
-```
+Open the notebooks in `notebooks/` and run cells top-to-bottom.
 
 ## Testing & code quality
 
 Run tests (if/when you add them):
 
 ```powershell
-poetry run pytest
+uv run pytest
 ```
 
-Format and lint:
+Lint and format:
 
 ```powershell
-poetry run black .
-poetry run flake8
+uv run ruff check src/
+uv run ruff format src/
+```
+
+Type checking:
+
+```powershell
+uv run mypy src/
+```
+
+Security audit:
+
+```powershell
+uv run bandit -r src/ -c pyproject.toml
+uv run pip-audit
+```
+
+Markdown linting:
+
+```powershell
+uv run pymarkdown --config pyproject.toml scan docs/ README.md
+```
+
+## Docker
+
+Build and run the Docker image:
+
+```powershell
+docker build -t justakris/chest-xray-classification-app:latest .
+```
+
+Run attached (logs stream to terminal, container removed on exit):
+
+```powershell
+docker run -it --rm -p 5050:5050 --name chest-xray-classification justakris/chest-xray-classification-app:latest
+```
+
+Run detached in the background:
+
+```powershell
+docker run -d --rm -p 5050:5050 --name chest-xray-classification justakris/chest-xray-classification-app:latest
+```
+
+Follow logs of a detached container:
+
+```powershell
+docker logs -f chest-xray-classification
+```
+
+Stop and remove the container:
+
+```powershell
+docker stop chest-xray-classification
 ```
 
 ## Common Git workflows
@@ -90,7 +149,8 @@ Clone and start working:
 
 ```powershell
 git clone <repo-url>
-cd Donald-Trump-Rally-Speeches-NLP
+cd CNN-Classification-of-Chest-X-Ray-Images
+uv sync
 ```
 
 Daily workflow:
@@ -113,9 +173,8 @@ git reset HEAD <path/to/file>
 
 ## Quick reference
 
-- Install deps: `poetry install`
-- Start Jupyter Lab: `poetry run jupyter lab`
-- Run tests: `poetry run pytest`
-- Format code: `poetry run black .`
-
----
+- Install deps: `uv sync`
+- Start Jupyter Lab: `uv run --group notebooks jupyter lab`
+- Run tests: `uv run pytest`
+- Lint code: `uv run ruff check src/`
+- Format code: `uv run ruff format src/`

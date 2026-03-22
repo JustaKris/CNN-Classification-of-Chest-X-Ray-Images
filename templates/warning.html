@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chest X-Ray Image Classification - Warning</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Image Type Warning</h2>
+        <p>
+            The uploaded image does not appear to be a chest X-ray.<br>
+            It was detected as <b>{{ detected_type }}</b> with {{ confidence }}% confidence.
+        </p>
+        <p>
+            The classification model is designed for chest X-ray images.
+            Results on other image types will not be meaningful.
+        </p>
+
+        <div class="warning-actions">
+            <form method="POST" action="/process">
+                <input type="hidden" name="force" value="true">
+                <button type="submit">Proceed Anyway</button>
+            </form>
+            <button onclick="window.location.href='/'">Go Back</button>
+        </div>
+    </div>
+</body>
+</html>

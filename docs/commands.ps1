@@ -1,31 +1,40 @@
-# Environment setup - Anaconda
-conda env list
-conda create -p venv python=3.11 -y
-conda activate venv/
+# Environment setup - uv (recommended)
+uv sync
+uv sync --group notebooks    # Include Jupyter/training deps
+uv sync --group streamlit    # Include Streamlit frontend
+uv sync --all-groups          # Install everything
 
-# Environment setup - Python 3.11
-python3.11 -m venv venv
-venv\Scripts\activate
+# Activate virtual environment
+& ".venv\Scripts\Activate.ps1"
 
 # Run app locally
-pip install --upgrade pip setuptools
-pip install -r requirements.txt
-pip install -e .
-python app.py  # localhost:5000
+uv run python app.py  # localhost:5050
 
 # Tensorboard
-tensorboard --logdir=./logs/tensorboard
+uv run tensorboard --logdir=./logs/tensorboard
+
+# Linting & formatting
+uv run ruff check src/
+uv run ruff format src/
+
+# Type checking
+uv run mypy src/
+
+# Security audit
+uv run bandit -r src/ -c pyproject.toml
+uv run pip-audit
 
 # Run unit tests
-python -m unittest discover -s tests/unit -p '*_test.py'
-
-# Run ui tests
-npx playwright install
-npx playwright test
+uv run pytest
 
 # Docker
 docker build -t justakris/chest-xray-classification-app:latest .
-docker run -p 5050:5050 -d --name chest-xray-classification justakris/chest-xray-classification-app:latest
+# Run attached — logs stream to terminal, container removed on exit
+docker run -it --rm -p 5050:5050 --name chest-xray-classification justakris/chest-xray-classification-app:latest
+# Run detached in the background
+docker run -d --rm -p 5050:5050 --name chest-xray-classification justakris/chest-xray-classification-app:latest
+# Follow logs of a detached container
+docker logs -f chest-xray-classification
 docker stop chest-xray-classification
 
 # Docker Hub
