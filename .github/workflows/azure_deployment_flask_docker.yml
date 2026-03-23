@@ -1,13 +1,15 @@
+# DEPRECATED: Use deploy-azure.yml instead.
+# This workflow is kept for reference only.
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy container app to Azure Web App - chest-xray-calssification
+name: "[DEPRECATED] Build and deploy container app to Azure Web App"
 
 on:
-  push:
-    branches: [ "main", "Project-Revisit" ]
-  pull_request:
-    branches: [ "main", "Project-Revisit" ]
+  # push:
+  #   branches: [ "main", "Project-Revisit" ]
+  # pull_request:
+  #   branches: [ "main", "Project-Revisit" ]
   workflow_dispatch:
 
 jobs:
