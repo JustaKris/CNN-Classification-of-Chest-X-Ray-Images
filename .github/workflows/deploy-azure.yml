@@ -5,10 +5,11 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  workflow_run:
-    workflows: ["Docker: Build & Push"]
-    types: [completed]
-    branches: [main]
+  # Commenting out automated trigger to conserve Azure free tier resources
+  # workflow_run:
+  #   workflows: ["Docker: Build & Push"]
+  #   types: [completed]
+  #   branches: [main]
   workflow_dispatch:
     inputs:
       image-tag:
