@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.12-slim-bookworm AS base
+FROM python:3.12-slim-bookworm AS builder
 
 WORKDIR /app
 
