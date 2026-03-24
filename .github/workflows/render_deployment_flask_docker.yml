@@ -1,4 +1,6 @@
-name: Deploy Chest X-Ray Classification Flask App to Render via DockerHub
+# DEPRECATED: Use deploy-render.yml instead.
+# This workflow is kept for reference only.
+name: "[DEPRECATED] Deploy Flask App to Render via DockerHub"
 
 on:
   # push:

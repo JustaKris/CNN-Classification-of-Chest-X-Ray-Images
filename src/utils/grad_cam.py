@@ -1,23 +1,29 @@
+"""Grad-CAM heatmap generation and visualization for CNN interpretability."""
+
 import os
+
+import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
 from matplotlib import colormaps as cm
+
 from src.config import CLASSES
-from IPython.display import display, Image
+
 
 def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None):
+    """Compute a Grad-CAM heatmap for a given image and convolutional layer."""
     # Create a model that maps the input image to the activations
     # of the last conv layer as well as the output predictions
     grad_model = tf.keras.models.Model(
-        model.inputs,
-        [model.get_layer(last_conv_layer_name).output, model.output]
+        model.inputs, [model.get_layer(last_conv_layer_name).output, model.output]
     )
 
     # Compute the gradient of the top predicted class for our input image
     # with respect to the activations of the last conv layer
     with tf.GradientTape() as tape:
         last_conv_layer_output, preds = grad_model(img_array)
+        if isinstance(preds, list):
+            preds = preds[0]
         if pred_index is None:
             pred_index = tf.argmax(preds[0])
         class_channel = preds[:, pred_index]
@@ -34,14 +40,16 @@ def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None
     # by "how important this channel is" with regard to the top predicted class
     # then sum all the channels to obtain the heatmap class activation
     last_conv_layer_output = last_conv_layer_output[0]
-    heatmap = last_conv_layer_output @ pooled_grads[..., tf.newaxis]
+    heatmap = last_conv_layer_output @ pooled_grads[..., tf.newaxis]  # type: ignore[index]
     heatmap = tf.squeeze(heatmap)
 
     # For visualization purpose, we will also normalize the heatmap between 0 & 1
     heatmap = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
     return heatmap.numpy()
 
+
 def save_and_display_gradcam(img_path, heatmap, cam_path="./artifacts/", alpha=0.4):
+    """Overlay a Grad-CAM heatmap on the original image and save to disk."""
     # Load the original image
     img = tf.keras.preprocessing.image.load_img(img_path)
     img = tf.keras.preprocessing.image.img_to_array(img)
@@ -73,10 +81,14 @@ def save_and_display_gradcam(img_path, heatmap, cam_path="./artifacts/", alpha=0
     # Display Grad CAM in Jupyter or IPython
     # display(Image(filename=superimposed_img_path))
 
+
 def display_grad_heatmaps(model, img_path, last_conv_layer_name, display_heatmap=0):
+    """Generate and display or save Grad-CAM visualizations for an image."""
     # Prepare image
     preprocess_input = tf.keras.applications.imagenet_utils.preprocess_input
-    img_array = preprocess_input(get_img_array(img_path, size=(224, 224)))  # Ensure size matches model input size
+    img_array = preprocess_input(
+        get_img_array(img_path, size=(224, 224))
+    )  # Ensure size matches model input size
 
     # Target final convolutional layer
     last_conv_layer_name = last_conv_layer_name
@@ -106,7 +118,9 @@ def display_grad_heatmaps(model, img_path, last_conv_layer_name, display_heatmap
     # Re-add the softmax activation for future predictions
     model.layers[-1].activation = tf.keras.activations.softmax
 
+
 def get_img_array(img_path, size):
+    """Load an image from disk and return it as a batch-ready numpy array."""
     # `img` is a PIL image of size 224x224
     img = tf.keras.preprocessing.image.load_img(img_path, target_size=size)
     # `array` is a float32 Numpy array of shape (224, 224, 3)
@@ -116,9 +130,11 @@ def get_img_array(img_path, size):
     array = np.expand_dims(array, axis=0)
     return array
 
+
 if __name__ == "__main__":
     import matplotlib.image as mpimg
-    from src.utils.utils import preprocess_image, load_model, get_best_model_path
+
+    from src.utils.utils import get_best_model_path, load_model, preprocess_image
 
     # Load the model
     model = load_model(get_best_model_path()[0])
@@ -144,5 +160,5 @@ if __name__ == "__main__":
 
     # Display the image
     plt.imshow(image)
-    plt.axis('off')  # Hide axis
+    plt.axis("off")  # Hide axis
     plt.show()

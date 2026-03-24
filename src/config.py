@@ -1,16 +1,18 @@
+"""Project-wide configuration constants for datasets, model, and training."""
+
 # Datasets
 DATASETS = {
     "xray_train": "./data/Chest X-Rays/train",
     "xray_test": "./data/Chest X-Rays/test",
-    "xray_val": "./data/Chest X-Rays/val"
+    "xray_val": "./data/Chest X-Rays/val",
 }
 
 # Classes
 CLASSES = {
-    0: 'COVID19',
-    1: 'NORMAL',
-    2: 'PNEUMONIA',
-    3: 'TURBERCULOSIS'
+    0: "COVID19",
+    1: "NORMAL",
+    2: "PNEUMONIA",
+    3: "TURBERCULOSIS",
 }
 
 # Basic model config
@@ -21,8 +23,8 @@ INPUT_SHAPE = (*IMAGE_SIZE, 1 if COLOR_MODE == "grayscale" else 3)
 
 # Class weights manual calculation
 CLASS_WEIGHTS = {
-    0: 8.4, 
-    1: 2.9, 
-    2: 1, 
-    3: 6
+    0: 8.4,
+    1: 2.9,
+    2: 1,
+    3: 6,
 }

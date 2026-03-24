@@ -1,0 +1,92 @@
+name: "Deploy: Azure App Service"
+
+concurrency:
+  group: deploy-azure-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  workflow_run:
+    workflows: ["Docker: Build & Push"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      image-tag:
+        description: 'Docker image tag to deploy (e.g., prod, latest). Defaults to "prod".'
+        required: false
+        default: 'prod'
+        type: string
+
+jobs:
+  deploy-azure:
+    name: Deploy to Azure Web App
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'chest-xray-classification'
+          slot-name: 'production'
+          images: 'index.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/chest-xray-classification-app:${{ inputs.image-tag || ''prod'' }}'
+
+  verify:
+    name: Verify Deployment
+    runs-on: ubuntu-latest
+    needs: deploy-azure
+    env:
+      AZURE_WEBAPP_NAME: 'chest-xray-classification'
+      AZURE_HEALTH_INITIAL_DELAY: 60
+      AZURE_HEALTH_RETRIES: 30
+      AZURE_HEALTH_INTERVAL: 30
+
+    steps:
+      - name: Wait and Probe Health Endpoint
+        run: |
+          echo "Waiting ${AZURE_HEALTH_INITIAL_DELAY}s for deployment to settle..."
+          sleep "${AZURE_HEALTH_INITIAL_DELAY}"
+
+          HEALTH_URL="https://${AZURE_WEBAPP_NAME}.azurewebsites.net/"
+          echo "Checking health endpoint: $HEALTH_URL (max ${AZURE_HEALTH_RETRIES} attempts)"
+
+          attempt=1
+          while [ "$attempt" -le "$AZURE_HEALTH_RETRIES" ]; do
+            echo "Attempt $attempt of $AZURE_HEALTH_RETRIES..."
+            if curl -fsS --max-time 10 "$HEALTH_URL" >/dev/null 2>&1; then
+              echo "Health check passed on attempt $attempt"
+              exit 0
+            fi
+            echo "Attempt $attempt failed; sleeping ${AZURE_HEALTH_INTERVAL}s before retry..."
+            sleep "$AZURE_HEALTH_INTERVAL"
+            attempt=$((attempt + 1))
+          done
+
+          echo "Health check failed after ${AZURE_HEALTH_RETRIES} attempts."
+          exit 1
+
+      - name: Deployment Summary
+        if: success()
+        run: |
+          echo "## Azure Deployment Status" >> $GITHUB_STEP_SUMMARY
+          echo "Docker image built and pushed" >> $GITHUB_STEP_SUMMARY
+          echo "Deployed to Azure Web App" >> $GITHUB_STEP_SUMMARY
+          echo "Health check passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment Details:**" >> $GITHUB_STEP_SUMMARY
+          echo "- App Name: chest-xray-classification" >> $GITHUB_STEP_SUMMARY
+          echo "- URL: https://chest-xray-classification.azurewebsites.net" >> $GITHUB_STEP_SUMMARY

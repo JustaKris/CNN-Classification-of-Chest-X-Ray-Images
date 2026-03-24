@@ -145,3 +145,10 @@ a.link:hover {
     display: block; /* Ensures no extra space below image */
     margin: 0 auto; /* Centers the image within its container */
 }
+
+.warning-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}

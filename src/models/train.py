@@ -1,12 +1,15 @@
-from src.models.models import EfficientNetTransfer, MobileNetV3Transfer
-from tensorflow.keras.optimizers import Adam # type: ignore
-from tensorflow.keras.losses import SparseCategoricalCrossentropy # type: ignore
-from tensorflow.keras.metrics import AUC, SparseCategoricalAccuracy # type: ignore
-from src.utils.callbacks import CustomTensorBoardCallback, tensorboard_cb, checkpoint_cb, early_stoppings_cb, lr_plateau_cb, lr_scheduler_cb
-from src.utils.utils import get_best_model_path, load_model
+"""Training script for transfer learning models on chest X-ray data."""
+
+from tensorflow.keras.losses import SparseCategoricalCrossentropy  # type: ignore
+from tensorflow.keras.metrics import SparseCategoricalAccuracy  # type: ignore
+from tensorflow.keras.optimizers import Adam  # type: ignore
+
+from src.config import BATCH_SIZE, CLASS_WEIGHTS, CLASSES, DATASETS
 from src.data.data_loader import load_dataset
+from src.models.models import EfficientNetTransfer
+from src.utils.callbacks import checkpoint_cb, early_stoppings_cb, lr_plateau_cb, tensorboard_cb
 from src.utils.evaluate import evaluate_model, plot_accuracy_loss
-from src.config import BATCH_SIZE, CLASSES, CLASS_WEIGHTS, DATASETS
+from src.utils.utils import get_best_model_path
 
 EPOCHS = 20
 BETA_1 = 0.9
@@ -20,14 +23,14 @@ METRICS = [
 # model_path, score = get_best_model_path(".\checkpoints\MobileNetV3Transfer")
 
 model = EfficientNetTransfer()
-model_path, score = get_best_model_path(".\checkpoints\EfficientNetTransfer")
+model_path, score = get_best_model_path(r".\checkpoints\EfficientNetTransfer")
 
 # Compile model
 model.compile(
     optimizer=Adam(learning_rate=1e-3, beta_1=BETA_1),
     loss=SparseCategoricalCrossentropy(),
     metrics=METRICS,
-    weighted_metrics=METRICS
+    weighted_metrics=METRICS,
 )
 # model.summary()
 # exit()
@@ -44,12 +47,12 @@ print(model_name)
 # Callbacks
 callbacks = [
     # CustomTensorBoardCallback(model_name),
-    tensorboard_cb(model_name), 
-    checkpoint_cb(model_name), 
+    tensorboard_cb(model_name),
+    checkpoint_cb(model_name),
     early_stoppings_cb,
     lr_plateau_cb,
     # lr_scheduler_cb
-    ]
+]
 
 # Data loader
 train = load_dataset(DATASETS["xray_train"], augment=True, shuffle=True)
@@ -63,7 +66,7 @@ history = model.fit(
     batch_size=BATCH_SIZE,
     validation_data=test,
     class_weight=CLASS_WEIGHTS,
-    callbacks=callbacks
+    callbacks=callbacks,
 )
 
 # Eval
@@ -71,7 +74,7 @@ evaluate_model(model, test, CLASSES.values())
 # plot_accuracy_loss(history=history.history, metric="weighted_sparse_categorical_accuracy")
 
 # Fine-tuning the base model
-layers_to_train = (len(model.layers) // 2)
+layers_to_train = len(model.layers) // 2
 for layer in model.layers[-layers_to_train:]:
     layer.trainable = True
 print(f"Model layers for fine tuning - Bottom {layers_to_train}")
@@ -81,7 +84,7 @@ model.compile(
     optimizer=Adam(learning_rate=1e-4, beta_1=BETA_1),
     loss=SparseCategoricalCrossentropy(),
     metrics=METRICS,
-    weighted_metrics=METRICS
+    weighted_metrics=METRICS,
 )
 
 # Continue training with unfrozen layers
@@ -91,7 +94,7 @@ history_fine_tune = model.fit(
     batch_size=BATCH_SIZE,
     validation_data=test,
     class_weight=CLASS_WEIGHTS,
-    callbacks=callbacks
+    callbacks=callbacks,
 )
 
 # Eval
