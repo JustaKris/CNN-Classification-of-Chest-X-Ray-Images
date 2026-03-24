@@ -51,6 +51,7 @@ jobs:
     needs: deploy-azure
     env:
       AZURE_WEBAPP_NAME: 'chest-xray-classification'
+      AZURE_WEBAPP_URL: 'chest-xray-classification.azurewebsites.net'
       AZURE_HEALTH_INITIAL_DELAY: 60
       AZURE_HEALTH_RETRIES: 30
       AZURE_HEALTH_INTERVAL: 30
@@ -61,7 +62,7 @@ jobs:
           echo "Waiting ${AZURE_HEALTH_INITIAL_DELAY}s for deployment to settle..."
           sleep "${AZURE_HEALTH_INITIAL_DELAY}"
 
-          HEALTH_URL="https://${AZURE_WEBAPP_NAME}.azurewebsites.net/"
+          HEALTH_URL="https://${AZURE_WEBAPP_URL}/"
           echo "Checking health endpoint: $HEALTH_URL (max ${AZURE_HEALTH_RETRIES} attempts)"
 
           attempt=1
