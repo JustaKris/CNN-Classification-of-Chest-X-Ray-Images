@@ -1,16 +1,16 @@
 # The data consists of almost 2GB of X-Ray images
 data/*
-commands.sh
-notebooks/cam.jpg
 
-# Logs
-notebooks/Checkpoints
-notebooks/KerasTuner
-notebooks/mlruns
-notebooks/TensorBoard
+# Not needed in the Docker image
+notebooks/
+docs/
+tests/
+reports/
+.github/
+
+# Logs and runtime artifacts
 mlruns/*
 logs/*
-checkpoints/*
 artifacts/*
 .git
 .gitignore
