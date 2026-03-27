@@ -19,7 +19,7 @@ COPY pyproject.toml uv.lock /app/
 RUN uv venv /opt/venv
 
 # Export production deps, strip GPU packages, install CPU-only alternatives
-RUN uv export --frozen --no-dev --no-hashes > requirements.txt && \
+RUN uv export --frozen --no-dev --no-hashes --no-emit-project > requirements.txt && \
     # Remove GPU packages, torch (install CPU version separately), and packages not needed in Docker
     sed -i -E '/^(torch|torchvision|tensorflow|nvidia[-_]|triton|streamlit|opencv-python)/d' requirements.txt && \
     # Install CPU-only PyTorch (no torchvision needed - only torch is used by CLIP)
@@ -40,6 +40,8 @@ WORKDIR /app
 # Copy the venv from builder
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
+# Allow Python to find the xray_classifier package under src/
+ENV PYTHONPATH="/app/src"
 
 # Copy application code
 COPY . /app
@@ -47,5 +49,5 @@ COPY . /app
 # Expose port 5050
 EXPOSE 5050
 
-# Run the Flask app
-CMD ["python", "app.py"]
+# Run the Flask app via module entry point
+CMD ["python", "-m", "xray_classifier.web.flask_app"]
