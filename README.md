@@ -44,7 +44,7 @@ The app is containerized with a multi-stage Docker build and deployed to Azure A
 
 **Live demo:** [chest-xray-classification.azurewebsites.net](https://chest-xray-classification.azurewebsites.net/)
 
-> The app runs on a free Azure plan and may take a moment to wake up after a period of inactivity.
+> **Performance note:** The app runs on Azure's free tier. Expect **1–2 minutes for initial startup** after a period of inactivity (cold start). Once running, each prediction takes **10–20 seconds** — the app first validates the image type with CLIP, then runs the classification model and generates a Grad-CAM heatmap.
 
 ```bash
 # Run locally with Docker

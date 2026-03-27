@@ -18,6 +18,11 @@ on:
         default: 'prod'
         type: string
 
+# Opt into Node.js 24 for GitHub Actions. Node 20 is deprecated and will be
+# removed Sept 2026. Remove this once all actions natively support Node 24.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   deploy-azure:
     name: Deploy to Azure Web App

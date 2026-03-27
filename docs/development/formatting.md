@@ -566,7 +566,6 @@ Exit codes:
 - **[Linting Guide](linting.md)** - Code quality checks
 - **[Testing Guide](testing.md)** - Test practices and coverage
 - **[Code Style](code-style.md)** - General style guidelines
-- **[CI/CD Local Testing](../guides/ci-local-testing.md)** - Running CI checks locally
 
 ## Resources
 

@@ -8,7 +8,6 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - '.github/workflows/deploy-docs.yml'
       - '.github/workflows/deploy-render.yml'
       - '.github/workflows/deploy-azure.yml'
       - '.github/workflows/security-audit.yml'
@@ -16,6 +15,11 @@ on:
       - '*.md'
       - 'notebooks/**'
   workflow_dispatch:
+
+# Opt into Node.js 24 for GitHub Actions. Node 20 is deprecated and will be
+# removed Sept 2026. Remove this once all actions natively support Node 24.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   build:

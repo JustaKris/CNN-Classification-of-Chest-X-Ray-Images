@@ -2,6 +2,9 @@
 data/*
 notebooks/cam.jpg
 
+# MkDocs build output
+public/
+
 # Logs
 notebooks/Checkpoints
 notebooks/KerasTuner
