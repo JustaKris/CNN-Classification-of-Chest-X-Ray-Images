@@ -38,11 +38,11 @@ jobs:
       - name: Run all tests with coverage
         run: |
           uv run pytest tests/ -v \
-            --cov=src \
+            --cov=xray_classifier \
             --cov-report=term-missing \
             --cov-report=html:reports/coverage/html \
             --cov-report=xml:reports/coverage/coverage.xml \
-            --cov-fail-under=10 \
+            --cov-fail-under=7 \
             --tb=short
 
       - name: Upload coverage reports

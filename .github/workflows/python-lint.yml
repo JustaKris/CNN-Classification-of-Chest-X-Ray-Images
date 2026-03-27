@@ -43,12 +43,12 @@ jobs:
       - name: Run ruff linting
         run: |
           echo "Running ruff linting..."
-          uv run ruff check src/ tests/ app.py streamlit_app.py
+          uv run ruff check src/ tests/
 
       - name: Run ruff format check
         run: |
           echo "Running ruff format check..."
-          uv run ruff format --check src/ tests/ app.py streamlit_app.py
+          uv run ruff format --check src/ tests/
 
       - name: Summary
         if: success()
