@@ -12,7 +12,6 @@ on:
       - "pyproject.toml"
   workflow_dispatch:
 
-
 jobs:
   lint:
     name: Lint

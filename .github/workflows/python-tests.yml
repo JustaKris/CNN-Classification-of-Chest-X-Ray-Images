@@ -7,7 +7,6 @@ on:
     branches: ["**"]
   workflow_dispatch:
 
-
 jobs:
   tests:
     name: Tests

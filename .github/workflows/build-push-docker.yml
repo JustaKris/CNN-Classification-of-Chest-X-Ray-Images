@@ -16,7 +16,6 @@ on:
       - 'notebooks/**'
   workflow_dispatch:
 
-
 jobs:
   build:
     name: Build & Push Container Image

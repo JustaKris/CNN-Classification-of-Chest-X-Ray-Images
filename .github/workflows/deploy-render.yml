@@ -19,7 +19,6 @@ on:
         default: 'prod'
         type: string
 
-
 jobs:
   deploy-render:
     name: Deploy to Render

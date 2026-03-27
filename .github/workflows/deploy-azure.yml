@@ -18,7 +18,6 @@ on:
         default: 'prod'
         type: string
 
-
 jobs:
   deploy-azure:
     name: Deploy to Azure Web App
