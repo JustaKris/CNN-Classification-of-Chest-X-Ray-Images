@@ -13,8 +13,8 @@ from tensorflow.keras.metrics import SparseCategoricalAccuracy  # type: ignore
 from tensorflow.keras.models import Model  # type: ignore
 from tensorflow.keras.optimizers import Adam  # type: ignore
 
-from src.config import CLASS_WEIGHTS, CLASSES, DATASETS, INPUT_SHAPE
-from src.data.data_loader import load_dataset
+from xray_classifier.config import CLASS_WEIGHTS, CLASSES, DATASETS, INPUT_SHAPE
+from xray_classifier.data.data_loader import load_dataset
 
 
 def build_model(hp):

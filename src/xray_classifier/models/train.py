@@ -4,12 +4,17 @@ from tensorflow.keras.losses import SparseCategoricalCrossentropy  # type: ignor
 from tensorflow.keras.metrics import SparseCategoricalAccuracy  # type: ignore
 from tensorflow.keras.optimizers import Adam  # type: ignore
 
-from src.config import BATCH_SIZE, CLASS_WEIGHTS, CLASSES, DATASETS
-from src.data.data_loader import load_dataset
-from src.models.models import EfficientNetTransfer
-from src.utils.callbacks import checkpoint_cb, early_stoppings_cb, lr_plateau_cb, tensorboard_cb
-from src.utils.evaluate import evaluate_model, plot_accuracy_loss
-from src.utils.utils import get_best_model_path
+from xray_classifier.config import BATCH_SIZE, CLASS_WEIGHTS, CLASSES, DATASETS
+from xray_classifier.data.data_loader import load_dataset
+from xray_classifier.models.models import EfficientNetTransfer
+from xray_classifier.utils.callbacks import (
+    checkpoint_cb,
+    early_stoppings_cb,
+    lr_plateau_cb,
+    tensorboard_cb,
+)
+from xray_classifier.utils.evaluate import evaluate_model, plot_accuracy_loss
+from xray_classifier.utils.utils import get_best_model_path
 
 EPOCHS = 20
 BETA_1 = 0.9

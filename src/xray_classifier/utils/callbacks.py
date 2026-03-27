@@ -11,7 +11,7 @@ from tensorflow.keras.callbacks import (  # type: ignore
     TensorBoard,
 )
 
-from src.utils.utils import get_date, get_time
+from xray_classifier.utils.utils import get_date, get_time
 
 METRIC = "val_weighted_sparse_categorical_accuracy"
 

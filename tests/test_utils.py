@@ -1,6 +1,6 @@
 """Unit tests for src.utils.utils module."""
 
-from src.utils.utils import get_date, get_time
+from xray_classifier.utils.utils import get_date, get_time
 
 
 class TestDateTimeHelpers:

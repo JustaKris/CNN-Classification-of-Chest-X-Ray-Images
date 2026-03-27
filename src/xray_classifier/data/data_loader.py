@@ -3,7 +3,7 @@
 import tensorflow as tf
 from tensorflow.keras.applications.imagenet_utils import preprocess_input  # type: ignore
 
-from src.config import BATCH_SIZE, CLASSES, COLOR_MODE, DATASETS, IMAGE_SIZE
+from xray_classifier.config import BATCH_SIZE, CLASSES, COLOR_MODE, DATASETS, IMAGE_SIZE
 
 AUTOTUNE = tf.data.AUTOTUNE
 

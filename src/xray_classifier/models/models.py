@@ -10,7 +10,7 @@ from tensorflow.keras.layers import (  # type: ignore
 )
 from tensorflow.keras.models import Model  # type: ignore
 
-from src.config import CLASSES, INPUT_SHAPE
+from xray_classifier.config import CLASSES, INPUT_SHAPE
 
 
 def MobileNetV3Transfer():

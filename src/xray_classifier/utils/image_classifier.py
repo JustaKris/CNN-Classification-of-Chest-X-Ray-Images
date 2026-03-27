@@ -4,7 +4,7 @@ import torch
 from PIL import Image
 from transformers import CLIPModel, CLIPProcessor
 
-from src.logger import get_logger
+from xray_classifier.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -24,7 +24,7 @@ CHEST_XRAY_LABEL = "a chest X-ray"
 CONFIDENCE_THRESHOLD = 0.5
 
 
-def load_clip_model(cache_dir="./models"):
+def load_clip_model(cache_dir="./saved_models"):
     """Load the CLIP model and processor, returning them as a tuple."""
     logger.info("Loading CLIP model for image type recognition...")
     model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32", cache_dir=cache_dir)
