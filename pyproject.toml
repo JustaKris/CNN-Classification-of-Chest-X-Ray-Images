@@ -43,7 +43,7 @@ dependencies = [
     # Data Processing & Visualization
     "numpy>=1.26.0,<3.0.0",
     "matplotlib>=3.8.0,<4.0.0",
-    "Pillow>=10.0.0,<12.0.0",
+    "Pillow>=10.0.0,<13.0.0",
 
     # Web Framework
     "Flask>=3.0.0,<4.0.0",
