@@ -40,7 +40,11 @@ User Image --> CLIP Validation --> Preprocessing --> MobileNetV3 Prediction --> 
 
 ### Deployment
 
-The app is containerized with a multi-stage Docker build and has been deployed to Azure App Service via GitHub Actions CI/CD. Deployment workflows for both Azure and Render are included.
+The app is containerized with a multi-stage Docker build and deployed to Azure App Service via GitHub Actions CI/CD. Deployment workflows for both Azure and Render are included.
+
+**Live demo:** [chest-xray-classification.azurewebsites.net](https://chest-xray-classification.azurewebsites.net/)
+
+> The app runs on a free Azure plan and may take a moment to wake up after a period of inactivity.
 
 ```bash
 # Run locally with Docker
@@ -52,7 +56,7 @@ docker run -p 5050:5050 chest-xray-classifier
 
 All experimentation — data exploration, model architecture comparisons, hyperparameter tuning, and evaluation — is documented in the Jupyter notebooks.
 
-**[View the Research Notebook](./notebooks/CNN%20classification%20of%20chest%20X-Ray%20Images.ipynb)**
+**[View the Research Notebook](./notebooks/CNN%20classification%20of%20chest%20X-Ray%20Images%20v2.ipynb)**
 
 ### Approach
 
@@ -85,6 +89,20 @@ The dataset combines three Kaggle chest X-ray datasets into **7,135 images** spl
 | Tuberculosis | Chest X-rays showing tuberculosis indicators |
 
 [Kaggle Dataset](https://www.kaggle.com/datasets/jtiptj/chest-xray-pneumoniacovid19tuberculosis)
+
+### Findings & Limitations
+
+The model achieves 92% accuracy on the held-out test set but **does not generalize well to images outside the dataset**. Testing against X-rays sourced from the internet showed poor performance, pointing to strong overfitting to the specific training distribution.
+
+Grad-CAM analysis reveals why: the dataset contains images from a very small number of patients (roughly 4–10 per class). As a result, the model partially learned **patient-specific anatomy** — bone structure around the shoulders and spine — rather than purely the disease markers in the lung tissue. This is visible in activation heatmaps that light up areas outside the lungs.
+
+Other observations from the notebook:
+
+- **Normal vs. Pneumonia** is the most common misclassification; the dataset is ~61% Pneumonia and the inter-class boundary is not well-defined
+- **Color artifacts** — some COVID images had a blue tint and TB images a purple cast; grayscaling was applied during preprocessing to prevent the model from using tint as a shortcut
+- **Domain knowledge gap** — without input from a medical specialist it is difficult to fully validate whether the regions the Grad-CAM highlights are clinically meaningful
+
+The most direct path to improving generalization would be a significantly larger and more diverse patient dataset.
 
 ## Technology Stack
 
