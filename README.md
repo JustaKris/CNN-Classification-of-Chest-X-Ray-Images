@@ -51,3 +51,60 @@ There is also a version of the app which uses Streamlit instead of Flask but I d
 
 4. Flask App:
     A Flask app houses the user interface where input is received and passed to the prediction pipeline. The app then displays the resulting outcome. It also displayes the original image with an overlayed heatmap of model activations, signifiyng what the model is "looking" at.
+
+## Project Structure
+
+The project uses a **src-layout** with the `xray_classifier` package under `src/`:
+
+```text
+├── src/xray_classifier/         # Core package
+│   ├── config.py                # Constants and configuration
+│   ├── logger.py                # Structured logging
+│   ├── exception.py             # Custom exception handling
+│   ├── data/                    # Data loading and augmentation
+│   ├── models/                  # Model architectures and training
+│   ├── tuning/                  # Hyperparameter tuning
+│   ├── utils/                   # Grad-CAM, CLIP validation, helpers
+│   └── web/                     # Flask & Streamlit apps, templates, static
+├── tests/                       # Test suite
+├── saved_models/                # Trained model weights (.keras)
+├── notebooks/                   # Research notebooks
+└── docs/                        # Documentation
+```
+
+For full details see [docs/architecture.md](docs/architecture.md).
+
+## Development
+
+### Prerequisites
+
+- Python 3.11+
+- [uv](https://docs.astral.sh/uv/) package manager
+
+### Setup
+
+```bash
+# Install dependencies
+uv sync --group dev
+
+# Run tests
+uv run pytest
+
+# Lint and format
+uv run ruff check src/ tests/
+uv run ruff format src/ tests/
+
+# Run the Flask app
+uv run xray-flask
+
+# Run the Streamlit app (requires streamlit group)
+uv sync --group streamlit
+uv run xray-streamlit
+```
+
+### Docker
+
+```bash
+docker build -t chest-xray-classifier .
+docker run -p 5050:5050 chest-xray-classifier
+```

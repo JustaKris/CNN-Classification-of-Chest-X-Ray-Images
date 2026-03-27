@@ -86,16 +86,16 @@ Ruff is used for both linting and formatting:
 
 ```powershell
 # Lint code
-uv run ruff check src/ app.py streamlit_app.py
+uv run ruff check src/ tests/
 
 # Auto-fix issues (including import sorting)
-uv run ruff check --fix src/ app.py streamlit_app.py
+uv run ruff check --fix src/ tests/
 
 # Format code
-uv run ruff format src/ app.py streamlit_app.py
+uv run ruff format src/ tests/
 
 # Check formatting without changes
-uv run ruff format --check src/ app.py streamlit_app.py
+uv run ruff format --check src/ tests/
 ```
 
 For detailed usage and configuration, see:

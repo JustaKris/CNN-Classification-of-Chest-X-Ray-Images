@@ -6,7 +6,7 @@
 
 ## Overview
 
-The project uses a centralized logging configuration (`src/logger.py`) that provides:
+The project uses a centralized logging configuration (`src/xray_classifier/logger.py`) that provides:
 
 - **JSON logging** for production/cloud environments (Azure, Docker)
 - **Colorized console logging** for local development
@@ -18,7 +18,7 @@ The project uses a centralized logging configuration (`src/logger.py`) that prov
 ### Basic Usage
 
 ```python
-from src.logger import configure_logging, get_logger
+from xray_classifier.logger import configure_logging, get_logger
 
 # Configure once at app startup
 configure_logging(level="INFO", use_json=False)
@@ -37,7 +37,7 @@ logger.error("Failed to load model", exc_info=True)
 The Flask app configures logging at startup:
 
 ```python
-from src.logger import configure_logging, get_logger
+from xray_classifier.logger import configure_logging, get_logger
 
 configure_logging(level="INFO", use_json=False)
 logger = get_logger(__name__)
@@ -66,10 +66,10 @@ configure_logging(level="INFO", use_json=False)
 **Output:**
 
 ```text
-2025-12-08 14:32:15 | INFO     | src.utils.utils | Image preprocessed successfully
-2025-12-08 14:32:16 | INFO     | app              | Prediction: COVID19 (92.3%)
-2025-12-08 14:32:17 | WARNING  | src.utils.image_classifier | Image may not be a chest X-ray
-2025-12-08 14:32:18 | ERROR    | src.utils.utils  | Error loading model from ./models/missing.keras
+2025-12-08 14:32:15 | INFO     | xray_classifier.utils.utils | Image preprocessed successfully
+2025-12-08 14:32:16 | INFO     | xray_classifier.web.flask_app | Prediction: COVID19 (92.3%)
+2025-12-08 14:32:17 | WARNING  | xray_classifier.utils.image_classifier | Image may not be a chest X-ray
+2025-12-08 14:32:18 | ERROR    | xray_classifier.utils.utils  | Error loading model from ./saved_models/missing.keras
 ```
 
 **Features:**
@@ -207,4 +207,4 @@ configure_logging(level="INFO", use_json=use_json)
 
 ---
 
-**Logging Module:** `src/logger.py`
+**Logging Module:** `src/xray_classifier/logger.py`

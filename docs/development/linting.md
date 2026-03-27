@@ -6,16 +6,16 @@ Code quality checks and linting using Ruff, Mypy, and Bandit for maintaining hig
 
 ```powershell
 # Run all linting checks
-uv run ruff check src/ app.py streamlit_app.py
+uv run ruff check src/ tests/
 
 # Check formatting
-uv run ruff format --check src/ app.py streamlit_app.py
+uv run ruff format --check src/ tests/
 
 # Auto-fix issues where possible
-uv run ruff check --fix src/ app.py streamlit_app.py
+uv run ruff check --fix src/ tests/
 
 # Format code
-uv run ruff format src/ app.py streamlit_app.py
+uv run ruff format src/ tests/
 
 # Type checking
 uv run mypy src/ --ignore-missing-imports
@@ -32,13 +32,13 @@ Ruff is an extremely fast Python linter written in Rust, combining the functiona
 
 ```powershell
 # Lint all source code
-uv run ruff check src/ app.py streamlit_app.py
+uv run ruff check src/ tests/
 
 # Check formatting
-uv run ruff format --check src/ app.py streamlit_app.py
+uv run ruff format --check src/ tests/
 
 # Format all code
-uv run ruff format src/ app.py streamlit_app.py
+uv run ruff format src/ tests/
 
 # Lint specific files
 uv run ruff check src/utils/utils.py
@@ -47,7 +47,7 @@ uv run ruff check src/utils/utils.py
 uv run ruff check src/ --output-format=full
 
 # Auto-fix safe issues
-uv run ruff check --fix src/ app.py streamlit_app.py
+uv run ruff check --fix src/ tests/
 ```
 
 ### What Ruff Checks
@@ -220,7 +220,7 @@ Ruff handles import sorting automatically.
 
 ```powershell
 # Sort imports with Ruff
-uv run ruff check --select I --fix src/ app.py streamlit_app.py
+uv run ruff check --select I --fix src/ tests/
 ```
 
 ### Import Order
@@ -241,8 +241,8 @@ import numpy as np
 from pydantic import BaseModel
 
 # Local
-from src.config import IMAGE_SIZE, BATCH_SIZE
-from src.utils.utils import load_model
+from xray_classifier.config import IMAGE_SIZE, BATCH_SIZE
+from xray_classifier.utils.utils import load_model
 ```
 
 ## Running All Checks
@@ -251,10 +251,10 @@ from src.utils.utils import load_model
 
 ```powershell
 # Lint with Ruff
-uv run ruff check src/ app.py streamlit_app.py
+uv run ruff check src/ tests/
 
 # Format check
-uv run ruff format --check src/ app.py streamlit_app.py
+uv run ruff format --check src/ tests/
 
 # Type check
 uv run mypy src/ --ignore-missing-imports
@@ -270,7 +270,7 @@ Create `lint.ps1`:
 ```powershell
 # Run all linting checks
 Write-Host "Running Ruff linter..." -ForegroundColor Cyan
-uv run ruff check src/ app.py streamlit_app.py
+uv run ruff check src/ tests/
 if ($LASTEXITCODE -ne 0) { exit 1 }
 
 Write-Host "`nRunning type checker..." -ForegroundColor Cyan
@@ -291,7 +291,7 @@ Linting runs automatically in GitHub Actions:
 ```yaml
 - name: Run ruff linting
   run: |
-    uv run ruff check src/ app.py streamlit_app.py
+    uv run ruff check src/ tests/
 
 - name: Run type checking
   run: |
