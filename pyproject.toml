@@ -38,7 +38,7 @@ dependencies = [
     # Deep Learning Frameworks
     "tensorflow>=2.18.0,<3.0.0",
     "torch>=2.6.0",                 # 2.6.0 minimum due to CVE-2025-32434
-    "transformers>=4.40.0,<5.0.0",  # CLIP model for image type recognition
+    "transformers>=4.40.0,<6.0.0",  # CLIP model for image type recognition
 
     # Data Processing & Visualization
     "numpy>=1.26.0,<3.0.0",
