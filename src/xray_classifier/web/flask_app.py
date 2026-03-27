@@ -6,21 +6,26 @@ import sys
 import numpy as np
 from flask import Flask, redirect, render_template, request, send_from_directory, url_for
 
-from src.config import CLASSES
-from src.exception import CustomException
-from src.logger import configure_logging, get_logger
-from src.utils.grad_cam import display_grad_heatmaps
-from src.utils.image_classifier import classify_image, load_clip_model
-from src.utils.utils import get_best_model_path, load_image_from_url, load_model, preprocess_image
+from xray_classifier.config import CLASSES
+from xray_classifier.exception import CustomException
+from xray_classifier.logger import configure_logging, get_logger
+from xray_classifier.utils.grad_cam import display_grad_heatmaps
+from xray_classifier.utils.image_classifier import classify_image, load_clip_model
+from xray_classifier.utils.utils import (
+    get_best_model_path,
+    load_image_from_url,
+    load_model,
+    preprocess_image,
+)
 
 configure_logging()
 logger = get_logger(__name__)
 
-app = Flask(__name__, template_folder="templates")
+app = Flask(__name__)
 
 # Load models during application startup
 try:
-    model_path, _ = get_best_model_path("./models")
+    model_path, _ = get_best_model_path("./saved_models")
     model = load_model(model_path)
     logger.info("Model successfully loaded from %s", model_path)
 except Exception as e:
@@ -33,7 +38,8 @@ except Exception as e:
     logger.error("Error loading CLIP model: %s", e)
     raise CustomException(str(e), sys)
 
-os.makedirs("./artifacts", exist_ok=True)
+ARTIFACTS_DIR = os.path.abspath("./artifacts")
+os.makedirs(ARTIFACTS_DIR, exist_ok=True)
 
 
 def process_image(image_file):
@@ -55,7 +61,7 @@ def process_image(image_file):
         display_grad_heatmaps(
             model=model,
             img_path=image_file,
-            last_conv_layer_name="expanded_conv_10_add",  # Replace with the correct layer name for your model
+            last_conv_layer_name="expanded_conv_10_add",
         )
         logger.info("GRAD Cam generated successfully.")
 
@@ -70,7 +76,7 @@ def process_image(image_file):
 @app.route("/artifacts/<filename>")
 def send_file(filename):
     """Serve generated artifact files (e.g. Grad-CAM images)."""
-    return send_from_directory("./artifacts", filename)
+    return send_from_directory(ARTIFACTS_DIR, filename)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -84,7 +90,7 @@ def process():
     """Handle image upload/URL, classify with CLIP, predict, and redirect."""
     error = None
     force = request.form.get("force", "false") == "true"
-    temp_file_path = os.path.join("./artifacts", "downloaded_image.jpg")
+    temp_file_path = os.path.join(ARTIFACTS_DIR, "downloaded_image.jpg")
 
     # When force=true, the image was already saved from the previous request
     if not force:
@@ -156,10 +162,14 @@ def prediction():
     )
 
 
-if __name__ == "__main__":
-    # Run the application
+def main():
+    """Run the Flask development server."""
     app.run(
         host="0.0.0.0",
         port=int(os.environ.get("PORT", 5050)),
         debug=os.environ.get("DEBUG", "false").lower() == "true",
     )
+
+
+if __name__ == "__main__":
+    main()

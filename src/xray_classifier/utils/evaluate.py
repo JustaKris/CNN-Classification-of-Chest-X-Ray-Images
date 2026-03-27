@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import classification_report, confusion_matrix
 
-from src.config import CLASSES
+from xray_classifier.config import CLASSES
 
 CLASS_NAMES = list(CLASSES.values())
 

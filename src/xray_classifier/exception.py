@@ -3,7 +3,7 @@
 import sys
 import types
 
-from src.logger import get_logger
+from xray_classifier.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -55,7 +55,7 @@ class CustomException(Exception):
 
 
 if __name__ == "__main__":
-    from src.logger import configure_logging
+    from xray_classifier.logger import configure_logging
 
     configure_logging()
     try:

@@ -8,13 +8,13 @@ Code formatting standards using Ruff formatter for consistent, readable code.
 
 ```powershell
 # Format all code
-uv run ruff format src/ app.py streamlit_app.py
+uv run ruff format src/ tests/
 
 # Check formatting without changes
-uv run ruff format --check src/ app.py streamlit_app.py
+uv run ruff format --check src/ tests/
 
 # Format specific files
-uv run ruff format src/config.py
+uv run ruff format src/xray_classifier/config.py
 ```
 
 ## Ruff Formatter
@@ -28,13 +28,13 @@ Ruff's formatter is compatible with Black but much faster.
 uv run ruff format src/
 
 # Format app entry points
-uv run ruff format app.py streamlit_app.py
+uv run ruff format src/ tests/
 
 # Format everything
-uv run ruff format src/ app.py streamlit_app.py
+uv run ruff format src/ tests/
 
 # Check without modifying
-uv run ruff format --check src/ app.py streamlit_app.py
+uv run ruff format --check src/ tests/
 
 # Show what would change
 uv run ruff format --diff src/
@@ -264,11 +264,11 @@ import pandas as pd
 import numpy as np
 from pydantic import BaseModel
 
-from src.config import IMAGE_SIZE, CLASSES
-from src.utils.utils import load_model
+from xray_classifier.config import IMAGE_SIZE, CLASSES
+from xray_classifier.utils.utils import load_model
 
 # Bad - mixed order
-from src.config import IMAGE_SIZE
+from xray_classifier.config import IMAGE_SIZE
 import numpy as np
 import os
 from PIL import Image
@@ -399,7 +399,7 @@ Format checking in GitHub Actions:
 ```yaml
 - name: Run ruff format check
   run: |
-    uv run ruff format --check src/ app.py streamlit_app.py
+    uv run ruff format --check src/ tests/
 ```
 
 This ensures code is properly formatted before merging.

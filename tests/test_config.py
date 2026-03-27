@@ -1,6 +1,6 @@
 """Unit tests for src.config module."""
 
-from src.config import CLASSES, COLOR_MODE, IMAGE_SIZE
+from xray_classifier.config import CLASSES, COLOR_MODE, IMAGE_SIZE
 
 
 class TestConfig:

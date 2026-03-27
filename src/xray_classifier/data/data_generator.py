@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 import tensorflow as tf
 
-from src.config import BATCH_SIZE, COLOR_MODE, IMAGE_SIZE
+from xray_classifier.config import BATCH_SIZE, COLOR_MODE, IMAGE_SIZE
 
 
 @dataclass

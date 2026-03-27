@@ -1,53 +1,165 @@
 # Chest X-Ray Image Classification
 
-This project is a continuation of a course project I did for my Deep Learning course in SoftUni. I wanted to adapt my work and build an app around it which would use the best performing model to be able to accept images via user input and generate predictions along with an overlaid model activations heatmap (GRAD_Cam). One of the main goals was to be able to deploy this app to one of the cloud computing platform.
+[![Tests](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/actions/workflows/python-tests.yml/badge.svg)](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/actions/workflows/python-tests.yml)
+[![Lint](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/actions/workflows/python-lint.yml/badge.svg)](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/actions/workflows/python-lint.yml)
+[![Type Check](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/actions/workflows/python-typecheck.yml/badge.svg)](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/actions/workflows/python-typecheck.yml)
+[![Security](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/actions/workflows/security-audit.yml/badge.svg)](https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images/actions/workflows/security-audit.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-## Jupyter Notebook
+An end-to-end deep learning application that classifies chest X-ray images into four diagnostic categories — **COVID-19**, **Normal**, **Pneumonia**, and **Tuberculosis** — and explains its predictions through Grad-CAM heatmap visualizations. The project spans the full ML lifecycle: research and experimentation in Jupyter notebooks, a production-ready web application with input validation, containerized deployment, and CI/CD automation.
 
-All research, model training and optimization was done in Jupuyter Notebook. The research contains training of various models from scrath as well as transfer learning using a MobileNet model which was chosen due to the limited resources avaialbe to me for model training (AMD RYZEN 7 3700X CPU).
+## Web Application
 
-Link to Notebook -> [CNN classification of chest X-Ray Images](./notebooks/CNN%20classification%20of%20chest%20X-Ray%20Images.ipynb)
+The core of this project is an interactive Flask web app that turns the trained model into a usable diagnostic tool. Users upload a chest X-ray (or paste a URL), and the app returns a classification along with a Grad-CAM overlay showing which regions of the image influenced the prediction.
+
+### Key Features
+
+- **Image upload or URL input** — accepts chest X-ray images from local files or via URL
+- **Real-time classification** — returns one of four diagnoses with a confidence score
+- **Grad-CAM visualization** — generates a heatmap overlay highlighting the areas the model focused on, making predictions interpretable
+- **CLIP-based input validation** — uses OpenAI's CLIP model (zero-shot) to verify the uploaded image is actually a chest X-ray before running the classifier, preventing nonsensical predictions on unrelated images
+- **Alternative Streamlit frontend** — a second interface built with Streamlit for quick prototyping and comparison
+
+### Prediction Pipeline
+
+```text
+User Image --> CLIP Validation --> Preprocessing --> MobileNetV3 Prediction --> Grad-CAM Heatmap
+                    |                                        |                         |
+               Is it an X-ray?                       Class + Confidence          Activation Overlay
+                    |                                        |                         |
+               (if not: warn)                                +----------+--------------+
+                                                             |
+                                                       Display Results
+```
+
+1. **Input validation** — CLIP zero-shot classification screens the image against several categories (X-ray, photograph, document, etc.) and warns the user if it doesn't appear to be a chest X-ray.
+2. **Preprocessing** — the image is resized to 224×224 and processed with TensorFlow's ImageNet preprocessing to match the model's expected input format.
+3. **Prediction** — the MobileNetV3 transfer learning model (92% accuracy) outputs class probabilities across the four categories.
+4. **Explainability** — Grad-CAM computes gradients against the final convolutional layer to produce a heatmap, which is overlaid on the original image.
+
+### Deployment
+
+The app is containerized with a multi-stage Docker build and has been deployed to Azure App Service via GitHub Actions CI/CD. Deployment workflows for both Azure and Render are included.
+
+```bash
+# Run locally with Docker
+docker build -t chest-xray-classifier .
+docker run -p 5050:5050 chest-xray-classifier
+```
+
+## Research & Model Development
+
+All experimentation — data exploration, model architecture comparisons, hyperparameter tuning, and evaluation — is documented in the Jupyter notebooks.
+
+**[View the Research Notebook](./notebooks/CNN%20classification%20of%20chest%20X-Ray%20Images.ipynb)**
+
+### Approach
+
+Several CNN architectures were trained and compared:
+
+| Approach | Description | Best Accuracy |
+| --- | --- | --- |
+| **CNN from scratch** | Custom convolutional architecture | ~82% |
+| **Expanded CNN + Keras Tuner** | Deeper architecture with automated hyperparameter search | ~82% |
+| **MobileNetV3 Transfer Learning** | Pre-trained MobileNetV3Small with fine-tuned classification head | **92%** |
+
+The **MobileNetV3 transfer learning model** was selected for the production app. MobileNetV3Small was chosen specifically because its lightweight architecture allows the app to run within the memory constraints of free-tier cloud platforms, while still achieving strong classification performance.
+
+### Training Details
+
+- **Class imbalance handling** — manual class weights compensate for the uneven distribution across categories (COVID-19 and Tuberculosis samples are significantly fewer than Normal and Pneumonia)
+- **Custom metrics** — per-class precision and recall, alongside a differentiable F1-based loss function
+- **Experiment tracking** — all training runs logged with MLflow, with checkpoints saved for each experiment
+- **Visualization** — TensorBoard integration for monitoring training metrics in real time
 
 ### Dataset
 
-The dataset was taken from Kaggle and it is comprised of three separate dataets that can also be found on the website.
-It is comprised of **7135** chest x-ray images. The dat ais split into 3 folders - **train/test/val** - and each class is stored in its own subfolder - **Normal/Pneumonia/Covid-19/Tuberculosis**.
+The dataset combines three Kaggle chest X-ray datasets into **7,135 images** split across train, validation, and test sets. Each image belongs to one of four classes:
 
-The goal is to predict one of the four categories:
+| Class | Description |
+| --- | --- |
+| COVID-19 | Chest X-rays showing COVID-19 indicators |
+| Normal | Healthy chest X-rays |
+| Pneumonia | Chest X-rays showing pneumonia |
+| Tuberculosis | Chest X-rays showing tuberculosis indicators |
 
-- Covid-19
-- Normal
-- Pneumonia
-- Tuberculosis
+[Kaggle Dataset](https://www.kaggle.com/datasets/jtiptj/chest-xray-pneumoniacovid19tuberculosis)
 
-Kaggle Dataset Link -> [https://www.kaggle.com/datasets/jtiptj/chest-xray-pneumoniacovid19tuberculosis](https://www.kaggle.com/datasets/jtiptj/chest-xray-pneumoniacovid19tuberculosis)
+## Technology Stack
 
-## Chest X-Ray Image Classification Web App
+| Category | Technologies |
+| --- | --- |
+| **Deep Learning** | TensorFlow / Keras, PyTorch (CLIP only), Keras Tuner |
+| **Web** | Flask, Streamlit, Jinja2, Gunicorn |
+| **MLOps** | MLflow, TensorBoard, Docker, GitHub Actions |
+| **Code Quality** | Ruff (lint + format), Mypy, Pytest, Bandit, pip-audit |
+| **Infrastructure** | Azure App Service, Render, Docker Hub |
+| **Package Management** | uv, Hatchling (src-layout) |
 
-The second part is building an app using what I've learned from the conducted research. The app is designed to be scalable which is achieved by the use of data, model training and prediction pipelines. I have tried to follow python convention so that the app can be deployed to any remote environment.
+## Project Structure
 
-### Azure Deployment
+```text
+src/xray_classifier/              # Installable Python package
+├── config.py                     # Global constants and class labels
+├── data/                         # Dataset loading and augmentation
+├── models/                       # Model architectures and training pipeline
+├── tuning/                       # Keras Tuner hyperparameter search
+├── utils/                        # Grad-CAM, CLIP validation, MLflow, evaluation
+└── web/                          # Flask & Streamlit apps, templates, static assets
 
-The predictor app was deployed on Aruze using a Docker container with a GitHub Workflow set up to update said container when a change is made to the repository and re-deploy the app. Azure was my platform of choice in the end since it provides a bit more computing power for the price and the app was able to run smoothly.
+saved_models/                     # Trained model weights (.keras)
+notebooks/                        # Research notebooks with MLflow and TensorBoard logs
+tests/                            # Pytest test suite
+docs/                             # Architecture docs and developer guide
+.github/workflows/                # CI/CD: tests, lint, typecheck, security, Docker, deploy
+```
 
-Azure Link -> [https://chest-xray-calssification.azurewebsites.net/](https://chest-xray-calssification.azurewebsites.net/)
+For the full architecture breakdown, see [docs/architecture.md](docs/architecture.md).
 
-The web app is using a free Azure plan so it may take a couple of minutes to load if it has not been in use recently.
+## Getting Started
 
-<!-- ### Render Deployment
+### Prerequisites
 
-There is also a version of the app which uses Streamlit instead of Flask but I don't find it to be as flexible. There is a deployment workflow available for it which instead deploys that version of the app to Render. -->
+- Python 3.11+
+- [uv](https://docs.astral.sh/uv/) package manager
 
-### Web App Approach
+### Installation
 
-1. User Input:
-    An image can be provided either by loading one fro mthe user's local drive or by providing a link. Regardless of which option is used, the image is then temporarily saved to be used by the app.
+```bash
+# Clone the repository
+git clone https://github.com/JustaKris/CNN-Classification-of-Chest-X-Ray-Images.git
+cd CNN-Classification-of-Chest-X-Ray-Images
 
-2. Image Transformation:
-    The image is then transformed in order for it to be passed to the trained model. The Tensorflow `imagenet` preprocessing function is used to keep the format consistent with what the model expects.
+# Install dependencies
+uv sync --group dev
 
-3. Model Training:
-    The transfer learning approach provided the best results and a MobileNetV3 model is what is used in the app. For details on the model training methodology, please refer to the notebook.
+# Run the Flask app
+uv run xray-flask
+```
 
-4. Flask App:
-    A Flask app houses the user interface where input is received and passed to the prediction pipeline. The app then displays the resulting outcome. It also displayes the original image with an overlayed heatmap of model activations, signifiyng what the model is "looking" at.
+The app will be available at `http://localhost:5050`.
+
+### Other Commands
+
+```bash
+# Run tests
+uv run pytest
+
+# Lint and format
+uv run ruff check src/ tests/
+uv run ruff format src/ tests/
+
+# Type checking
+uv run mypy src/
+
+# Run the Streamlit frontend instead
+uv sync --group streamlit
+uv run xray-streamlit
+```
+
+For Docker setup, CI/CD details, and contribution guidelines, see the [Developer Guide](docs/dev-guide.md).
+
+## License
+
+This project is licensed under the MIT License.

@@ -44,7 +44,7 @@ jobs:
       - name: Run type checking with mypy
         run: |
           echo "Running type checking with mypy on Python ${{ matrix.python-version }}..."
-          uv run mypy src/ tests/ app.py streamlit_app.py --ignore-missing-imports
+          uv run mypy src/ tests/ --ignore-missing-imports
 
       - name: Summary
         if: success()

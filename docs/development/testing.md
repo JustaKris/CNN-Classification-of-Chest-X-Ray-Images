@@ -60,7 +60,7 @@ uv run pytest --cov=src --cov-report=term-missing
 ```python
 import pytest
 from unittest.mock import patch, MagicMock
-from src.utils.utils import get_date, get_time, preprocess_image
+from xray_classifier.utils.utils import get_date, get_time, preprocess_image
 
 
 class TestUtilFunctions:

@@ -1,6 +1,6 @@
 """Unit tests for src.exception module."""
 
-from src.exception import CustomException
+from xray_classifier.exception import CustomException
 
 
 class TestCustomException:

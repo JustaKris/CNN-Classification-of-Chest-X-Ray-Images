@@ -7,7 +7,7 @@ import numpy as np
 import tensorflow as tf
 from matplotlib import colormaps as cm
 
-from src.config import CLASSES
+from xray_classifier.config import CLASSES
 
 
 def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None):
@@ -134,7 +134,7 @@ def get_img_array(img_path, size):
 if __name__ == "__main__":
     import matplotlib.image as mpimg
 
-    from src.utils.utils import get_best_model_path, load_model, preprocess_image
+    from xray_classifier.utils.utils import get_best_model_path, load_model, preprocess_image
 
     # Load the model
     model = load_model(get_best_model_path()[0])

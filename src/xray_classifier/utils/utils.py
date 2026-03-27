@@ -11,9 +11,9 @@ import tensorflow as tf
 from PIL import Image
 from tensorflow.keras.applications.imagenet_utils import preprocess_input  # type: ignore
 
-from src.config import COLOR_MODE, IMAGE_SIZE
-from src.exception import CustomException
-from src.logger import get_logger
+from xray_classifier.config import COLOR_MODE, IMAGE_SIZE
+from xray_classifier.exception import CustomException
+from xray_classifier.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -102,11 +102,11 @@ def preprocess_image(image_file, target_size=IMAGE_SIZE):
         raise CustomException(e)
 
 
-def get_best_model_path(directory="./checkpoints"):
+def get_best_model_path(directory="./saved_models"):
     """Get the path of the best model file within the specified directory based on the filename.
 
     Args:
-        directory (str): The directory to search for model files. Defaults to "./checkpoints".
+        directory (str): The directory to search for model files. Defaults to "./saved_models".
 
     Returns:
         Tuple[str, float]: A tuple containing the path of the best model file and its corresponding score.
