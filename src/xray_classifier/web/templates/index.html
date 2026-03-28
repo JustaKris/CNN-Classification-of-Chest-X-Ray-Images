@@ -40,6 +40,13 @@
                 <label for="image-url">Or enter the URL of a chest X-ray image:</label>
                 <input type="text" id="image-url" name="image_url" placeholder="Enter image URL">
                 <button type="submit">Submit</button>
+                <div class="example-hint">
+                    No image handy? <a
+                        class="link"
+                        href="#"
+                        onclick="document.getElementById('image-url').value='https://www.e7health.com/files/blogs/chest-x-ray-29.jpg'; return false;"
+                    >Try an example</a>
+                </div>
             </div>
         </form>
         

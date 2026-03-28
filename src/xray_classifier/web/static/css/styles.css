@@ -152,3 +152,9 @@ a.link:hover {
     gap: 15px;
     margin-top: 20px;
 }
+
+.example-hint {
+    margin-top: 8px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+}

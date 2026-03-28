@@ -150,7 +150,7 @@ to keep the image size manageable.
 
 ```bash
 # Foreground (logs stream to terminal, container removed on exit)
-docker run -it --rm -p 5050:5050 justakris/chest-xray-classification-app:latest
+docker run -it --rm -p 5050:5050 --name chest-xray justakris/chest-xray-classification-app:latest
 
 # Background (detached)
 docker run -d --rm -p 5050:5050 --name chest-xray justakris/chest-xray-classification-app:latest
