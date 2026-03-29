@@ -8,11 +8,17 @@
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 </head>
 <body>
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p>Analyzing image&hellip;</p>
+    </div>
+
     <div class="container">
         <h1>Chest X-Ray Image Classification</h1>
         <p>
             This application classifies chest X-ray images using a pre-trained convolutional neural network (CNN).
-            The model can identify whether an X-ray image indicates the presence of three ilnesses - <b>Covid19, Tunerculosis and Pneumonia
+            The model can identify whether an X-ray image indicates the presence of three illnesses - <b>Covid-19, Tuberculosis and Pneumonia
             </b> - with <b>Normal</b> being the output if neither of the three are detected.
         </p>
         
@@ -21,13 +27,14 @@
             You can upload a chest X-ray image file or provide a URL to the image.
             The app will display the predicted class and the confidence level.
             A Grad-CAM heatmap will be generated to highlight the regions of the image that were important for the prediction.
-            <!-- The model was trained on this dataset: <a class="link" href="https://www.kaggle.com/datasets/jtiptj/chest-xray-pneumoniacovid19tuberculosis" target="_blank">Kaggle Dataset</a> -->
         </p>
         
-        <!-- Horizontal rule -->
         <hr class="section-divider">
         
-        <form method="POST" action="/process" enctype="multipart/form-data">
+        <form id="upload-form" method="POST" action="/process" enctype="multipart/form-data">
+            <div class="drop-zone" id="drop-zone">
+                <p>Drag &amp; drop an X-ray image here, or use the fields below</p>
+            </div>
             <div class="field">
                 <label for="file-upload">Upload a chest X-ray image file:</label>
                 <input type="file" id="file-upload" name="file" accept="image/*">
@@ -35,7 +42,7 @@
             </div>
         </form>
         
-        <form method="POST" action="/process">
+        <form id="url-form" method="POST" action="/process">
             <div class="field">
                 <label for="image-url">Or enter the URL of a chest X-ray image:</label>
                 <input type="text" id="image-url" name="image_url" placeholder="Enter image URL">
@@ -60,5 +67,7 @@
             <p class="error">{{ error }}</p>
         {% endif %}
     </div>
+
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>

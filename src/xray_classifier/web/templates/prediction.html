@@ -9,18 +9,23 @@
 </head>
 <body>
     <div class="container">
-        <h3>Prediction: {{ prediction }}</h3>
+        <h3>Prediction</h3>
+        <span class="prediction-badge {{ prediction }}">{{ prediction }}</span>
+
         <p>Confidence Level: {{ confidence }}%</p>
-        <div class="image-container"></div>
+        <div class="confidence-bar-wrapper">
+            <div
+                class="confidence-bar {% if confidence|int >= 75 %}high{% elif confidence|int >= 45 %}medium{% else %}low{% endif %}"
+                style="width: {{ confidence }}%;"
+            >{{ confidence }}%</div>
+        </div>
+
         {% if grad_cam_image %}
-       
-            <img src="{{ url_for('send_file', filename=grad_cam_image) }}" alt="Grad-CAM Image" class="grad-cam">
-            <h5>Original image with overlayed model activations heatmap (Grad-CAM)</h5>
-        
+            <img src="{{ url_for('send_file', filename=grad_cam_image) }}" alt="Grad-CAM heatmap of the analyzed X-ray" class="grad-cam">
+            <h5>Original image with overlaid model activation heatmap (Grad-CAM)</h5>
         {% endif %}
         
         <button onclick="window.location.href='/'">Go Back</button>
-        </div>
     </div>
 </body>
 </html>

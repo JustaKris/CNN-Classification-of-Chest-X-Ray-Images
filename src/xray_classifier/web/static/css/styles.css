@@ -1,3 +1,4 @@
+/* ── Base ─────────────────────────────────────────────── */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,90 +7,115 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url('../images/background.jpg'); /* Set background image */
-    background-size: cover; /* Ensure the image covers the entire background */
-    background-position: center; /* Center the image */
-    background-repeat: no-repeat; /* Prevent the image from repeating */
-    color: #fff; /* Set text color to white */
+    background-image: url('../images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #fff;
 }
 
 .container {
-    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); /* Add glowing effect */
+    background-color: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 30px 35px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.15), 0 0 10px rgba(255, 255, 255, 0.1);
     max-width: 800px;
     text-align: center;
     width: 90%;
-    margin: auto; /* Center align the container */
-    overflow: hidden; /* Ensure contents do not overflow */
+    margin: 20px auto;
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease-out;
 }
 
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Typography ──────────────────────────────────────── */
 h1, h2 {
-    color: #fff; /* White text */
+    color: #fff;
     margin-top: 20px;
     margin-bottom: 5px;
 }
 
 h3, h4, h5 {
-    color: #fff; /* White text */
+    color: #fff;
     margin: 5px;
 }
 
+p {
+    line-height: 1.6;
+}
+
+/* ── Form fields ─────────────────────────────────────── */
 .field {
     margin-bottom: 15px;
-    text-align: center; /* Center align the field */
+    text-align: center;
 }
 
 .field label {
     display: block;
     margin-bottom: 5px;
-    color: #fff; /* White text */
+    color: #fff;
 }
 
 input[type="file"], input[type="text"], button {
     box-sizing: border-box;
     padding: 10px;
     margin: 0;
-    border: 1px solid rgba(255, 255, 255, 0.123); /* Light border color */
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.9); /* Semi-transparent black background */
-    color: #fff; /* White text */
-    transition: border-color 0.3s ease, background-color 0.3s ease; /* Smooth transitions */
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
     vertical-align: middle;
-    width: calc(100% - 24px); /* Adjusted width to fit container */
-    max-width: 100%; /* Ensure element fits within container */
-    display: inline-block; /* Ensure elements are inline */
+    width: calc(100% - 24px);
+    max-width: 100%;
+    display: inline-block;
 }
 
 input[type="file"], input[type="text"] {
-    width: calc(100% - 130px); /* Adjusted width to fit button beside */
-    margin-right: 10px; /* Add space between input and button */
+    width: calc(100% - 130px);
+    margin-right: 10px;
 }
 
 input[type="file"]:focus, input[type="text"]:focus {
-    border-color: #007bff; /* Highlight input border when focused */
+    border-color: #007bff;
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+    outline: none;
 }
 
+/* ── Buttons ─────────────────────────────────────────── */
 button {
     background-color: #007bff;
     border: none;
     border-radius: 5px;
     color: #fff;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 120px; /* Fixed width for buttons */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.25s ease;
+    width: 120px;
     margin-top: 10px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     vertical-align: middle;
-    display: inline-block; /* Ensure buttons are inline */
+    display: inline-block;
 }
 
 button:hover {
+    background-color: #0069d9;
     transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2); /* Add glowing effect on hover */
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.35);
 }
 
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+/* ── Links ───────────────────────────────────────────── */
 a.link {
     color: #007bff;
     text-decoration: none;
@@ -99,18 +125,21 @@ a.link {
 }
 
 a.link:hover {
-    color: #0056b3; /* Darker blue on hover */
+    color: #339dff;
+    text-decoration: underline;
 }
 
+/* ── Grad-CAM image ──────────────────────────────────── */
 .grad-cam {
     display: block;
     margin: 20px auto;
     max-width: 100%;
-    max-height: 80vh; /* Ensure image does not exceed viewport height */
+    max-height: 80vh;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 14px rgba(0, 123, 255, 0.2);
 }
 
+/* ── Footer links ────────────────────────────────────── */
 .links {
     display: flex;
     justify-content: center;
@@ -119,33 +148,36 @@ a.link:hover {
 }
 
 .separator {
-    color: white;
+    color: rgba(255, 255, 255, 0.4);
     margin: 0 10px;
     font-weight: bold;
 }
 
+/* ── Divider ─────────────────────────────────────────── */
 .section-divider {
     border: none;
-    border-top: 1px solid #ddd; /* Adjust border style */
-    margin: 20px 0; /* Adjust margin for spacing */
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin: 20px 0;
     padding: 0;
 }
 
+/* ── Image containers ────────────────────────────────── */
 .image-container {
-    max-width: 100%; /* Ensures image does not exceed the container */
-    max-height: 70vh; /* Adjust to fit within 70% of viewport height */
-    overflow: hidden; /* Prevents images from overflowing */
-    margin: 5px auto; /* Adds margin for spacing */
-    text-align: center; /* Centers image horizontally */
+    max-width: 100%;
+    max-height: 70vh;
+    overflow: hidden;
+    margin: 5px auto;
+    text-align: center;
 }
 
 .image-container img {
-    max-width: 100%; /* Ensure image fits within its container */
-    height: auto; /* Maintain aspect ratio */
-    display: block; /* Ensures no extra space below image */
-    margin: 0 auto; /* Centers the image within its container */
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
 }
 
+/* ── Warning page ────────────────────────────────────── */
 .warning-actions {
     display: flex;
     justify-content: center;
@@ -153,8 +185,163 @@ a.link:hover {
     margin-top: 20px;
 }
 
+/* ── Hint text ───────────────────────────────────────── */
 .example-hint {
     margin-top: 8px;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* ── Error message ───────────────────────────────────── */
+.error {
+    background-color: rgba(220, 53, 69, 0.2);
+    border: 1px solid rgba(220, 53, 69, 0.5);
+    border-radius: 6px;
+    color: #ff6b7a;
+    padding: 10px 16px;
+    margin-top: 16px;
+    font-size: 14px;
+    animation: fadeInUp 0.3s ease-out;
+}
+
+/* ── Drag-and-drop zone ──────────────────────────────── */
+.drop-zone {
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 24px 16px;
+    margin-bottom: 15px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.drop-zone.drag-over {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.08);
+}
+
+.drop-zone p {
+    margin: 0 0 8px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+}
+
+/* ── Confidence bar ──────────────────────────────────── */
+.confidence-bar-wrapper {
+    width: 80%;
+    max-width: 400px;
+    margin: 12px auto 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    overflow: hidden;
+    height: 22px;
+    position: relative;
+}
+
+.confidence-bar {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 1s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    min-width: 36px;
+}
+
+.confidence-bar.high       { background: linear-gradient(90deg, #007bff, #28a745); }
+.confidence-bar.medium     { background: linear-gradient(90deg, #007bff, #ffc107); }
+.confidence-bar.low        { background: linear-gradient(90deg, #dc3545, #ffc107); }
+
+/* ── Prediction badge ────────────────────────────────── */
+.prediction-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 1.15em;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    margin: 8px 0 4px;
+}
+
+.prediction-badge.NORMAL        { background: rgba(40, 167, 69, 0.25); border: 1px solid #28a745; color: #5bec80; }
+.prediction-badge.COVID19       { background: rgba(220, 53, 69, 0.25); border: 1px solid #dc3545; color: #ff6b7a; }
+.prediction-badge.PNEUMONIA     { background: rgba(255, 193, 7, 0.25); border: 1px solid #ffc107; color: #ffe066; }
+.prediction-badge.TURBERCULOSIS { background: rgba(255, 133, 27, 0.25); border: 1px solid #ff851b; color: #ffad60; }
+
+/* ── Loading overlay ─────────────────────────────────── */
+.loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(255, 255, 255, 0.15);
+    border-top-color: #007bff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-overlay p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 15px;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px 16px;
+        width: 95%;
+        margin: 12px auto;
+    }
+
+    input[type="file"], input[type="text"] {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 8px;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .warning-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .links {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .separator {
+        display: none;
+    }
+
+    .confidence-bar-wrapper {
+        width: 95%;
+    }
+
+    h1 { font-size: 1.4em; }
 }
