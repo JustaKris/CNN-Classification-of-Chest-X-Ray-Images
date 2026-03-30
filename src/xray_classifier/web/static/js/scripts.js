@@ -70,4 +70,9 @@
             overlay.classList.add("active");
         });
     });
+
+    // Hide the overlay when the page is restored from bfcache (browser back button)
+    window.addEventListener("pageshow", function (e) {
+        if (e.persisted) overlay.classList.remove("active");
+    });
 })();
