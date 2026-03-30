@@ -43,7 +43,7 @@ dependencies = [
     # Data Processing & Visualization
     "numpy>=1.26.0,<3.0.0",
     "matplotlib>=3.8.0,<4.0.0",
-    "Pillow>=10.0.0,<12.0.0",
+    "Pillow>=12.1.1,<13.0.0",  # 12.1.1 fixes CVE-2026-25990 (OOB write on PSD images)
 
     # Web Framework
     "Flask>=3.0.0,<4.0.0",
@@ -51,7 +51,7 @@ dependencies = [
 
     # Utilities
     "joblib>=1.3.0,<2.0.0",
-    "requests>=2.31.0,<3.0.0",
+    "requests>=2.33.0,<3.0.0",  # 2.33.0 fixes CVE-2026-25645 (predictable temp path in extract_zipped_paths)
 ]
 
 [project.scripts]
@@ -99,7 +99,7 @@ streamlit = [
 docs = [
     "mkdocs>=1.6.0,<2.0.0",
     "mkdocs-material>=9.5.0,<10.0.0",
-    "mkdocstrings[python]>=0.27.0,<1.0.0",
+    "mkdocstrings[python]>=0.27.0,<2.0.0",
     "pymdown-extensions>=10.0.0,<11.0.0",
 ]
 
