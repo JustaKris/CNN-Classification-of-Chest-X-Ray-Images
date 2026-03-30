@@ -65,6 +65,7 @@ def process_image(image_file):
             img_path=image_file,
             last_conv_layer_name="expanded_conv_10_add",
             cam_filename=cam_filename,
+            img_array=processed_image,
         )
         logger.info("GRAD Cam generated successfully.")
 

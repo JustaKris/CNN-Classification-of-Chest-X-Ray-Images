@@ -85,26 +85,21 @@ def save_and_display_gradcam(
 
 
 def display_grad_heatmaps(
-    model, img_path, last_conv_layer_name, display_heatmap=0, cam_filename="grad_cam.jpg"
+    model,
+    img_path,
+    last_conv_layer_name,
+    display_heatmap=0,
+    cam_filename="grad_cam.jpg",
+    img_array=None,
 ):
     """Generate and display or save Grad-CAM visualizations for an image."""
-    # Prepare image
-    preprocess_input = tf.keras.applications.imagenet_utils.preprocess_input
-    img_array = preprocess_input(
-        get_img_array(img_path, size=(224, 224))
-    )  # Ensure size matches model input size
-
-    # Target final convolutional layer
-    last_conv_layer_name = last_conv_layer_name
+    # Reuse pre-processed array when provided; otherwise load from disk
+    if img_array is None:
+        preprocess_input = tf.keras.applications.imagenet_utils.preprocess_input
+        img_array = preprocess_input(get_img_array(img_path, size=(224, 224)))
 
     # Remove softmax activation from final dense layer
     model.layers[-1].activation = None
-
-    # Predict image
-    preds = model.predict(img_array, verbose=False)
-
-    # Print predicted class
-    print("Predicted:", list(CLASSES.values())[np.argmax(preds)])
 
     # Generate class activation heatmap
     heatmap = make_gradcam_heatmap(img_array, model, last_conv_layer_name)

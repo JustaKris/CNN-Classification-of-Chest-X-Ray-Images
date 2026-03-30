@@ -46,11 +46,14 @@ ENV PYTHONPATH="/app/src"
 # Copy application code
 COPY . /app
 
+# Pre-download CLIP model so it is baked into the image (avoids ~45s download on every AWS start)
+RUN python -m xray_classifier.utils.download_models
+
 # Expose port 5050
 EXPOSE 5050
 
 # Run the app with gunicorn for production
 # 1 worker: ML inference is CPU-bound, multiple workers cause TF thread contention
 # 2 threads: allows serving static pages while inference runs
-# preload: loads models once in master before forking
-CMD ["gunicorn", "xray_classifier.web.flask_app:app", "--bind", "0.0.0.0:5050", "--workers", "1", "--threads", "2", "--preload", "--timeout", "120"]
+# No --preload: TensorFlow's thread pools break after fork(), causing predict() to deadlock
+CMD ["gunicorn", "xray_classifier.web.flask_app:app", "--bind", "0.0.0.0:5050", "--workers", "1", "--threads", "2", "--timeout", "120"]
