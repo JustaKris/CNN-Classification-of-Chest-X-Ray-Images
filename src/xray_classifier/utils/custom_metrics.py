@@ -23,10 +23,10 @@ class Precision(tf.keras.metrics.Metric):
         y_pred = tf.cast(y_pred, tf.int32)
 
         true_positives = tf.reduce_sum(tf.cast(tf.equal(y_true, y_pred), self.dtype))
-        predicted_positives = tf.reduce_sum(tf.cast(tf.not_equal(y_pred, 0), self.dtype))
+        total_predictions = tf.cast(tf.size(y_pred), self.dtype)
 
         self.true_positives.assign_add(true_positives)
-        self.predicted_positives.assign_add(predicted_positives)
+        self.predicted_positives.assign_add(total_predictions)
 
     def result(self):
         return self.true_positives / (self.predicted_positives + K.epsilon())
@@ -55,10 +55,10 @@ class Recall(tf.keras.metrics.Metric):
         y_pred = tf.cast(y_pred, tf.int32)
 
         true_positives = tf.reduce_sum(tf.cast(tf.equal(y_true, y_pred), self.dtype))
-        possible_positives = tf.reduce_sum(tf.cast(tf.not_equal(y_true, 0), self.dtype))
+        total_true = tf.cast(tf.size(y_true), self.dtype)
 
         self.true_positives.assign_add(true_positives)
-        self.possible_positives.assign_add(possible_positives)
+        self.possible_positives.assign_add(total_true)
 
     def result(self):
         return self.true_positives / (self.possible_positives + K.epsilon())

@@ -18,7 +18,7 @@ METRIC = "val_weighted_sparse_categorical_accuracy"
 
 def tensorboard_cb(model_name):
     """Create a TensorBoard callback with a timestamped log directory."""
-    log_dir = f"./logs/tensorboard/{model_name}/{model_name}-{get_date() + '_' + get_time()}"
+    log_dir = f"./logs/tensorboard/{model_name}/{model_name}-{get_date()}_{get_time()}"
     return TensorBoard(
         log_dir=log_dir,
         write_images=True,

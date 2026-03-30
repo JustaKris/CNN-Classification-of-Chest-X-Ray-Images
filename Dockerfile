@@ -49,5 +49,8 @@ COPY . /app
 # Expose port 5050
 EXPOSE 5050
 
-# Run the Flask app via module entry point
-CMD ["python", "-m", "xray_classifier.web.flask_app"]
+# Run the app with gunicorn for production
+# 1 worker: ML inference is CPU-bound, multiple workers cause TF thread contention
+# 2 threads: allows serving static pages while inference runs
+# preload: loads models once in master before forking
+CMD ["gunicorn", "xray_classifier.web.flask_app:app", "--bind", "0.0.0.0:5050", "--workers", "1", "--threads", "2", "--preload", "--timeout", "120"]

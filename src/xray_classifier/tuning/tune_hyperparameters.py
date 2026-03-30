@@ -69,7 +69,7 @@ def random_search_tuning(
         objective=objective,
         max_trials=max_trials,
         executions_per_trial=executions_per_trial,
-        directory=rf"logs\kerastuner\{model_name}",
+        directory=f"./logs/kerastuner/{model_name}",
         project_name=project_name,
     )
 

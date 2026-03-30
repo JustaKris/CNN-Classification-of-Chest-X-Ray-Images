@@ -2,6 +2,7 @@
 
 import os
 import sys
+import uuid
 
 import numpy as np
 from flask import Flask, redirect, render_template, request, send_from_directory, url_for
@@ -57,16 +58,17 @@ def process_image(image_file):
             "Generated prediction - %s; Predictions - %s", prediction_class, predictions.tolist()[0]
         )
 
-        # Generate Grad-CAM heatmap
+        # Generate Grad-CAM heatmap with unique filename
+        cam_filename = f"grad_cam_{uuid.uuid4().hex}.jpg"
         display_grad_heatmaps(
             model=model,
             img_path=image_file,
             last_conv_layer_name="expanded_conv_10_add",
+            cam_filename=cam_filename,
         )
         logger.info("GRAD Cam generated successfully.")
 
-        # Return the path to the Grad-CAM image
-        grad_cam_image_path = "./artifacts/grad_cam.jpg"
+        grad_cam_image_path = os.path.join("./artifacts", cam_filename)
         return prediction_class, prediction_value, grad_cam_image_path
     except Exception as e:
         logger.error("Error processing image: %s", e)
@@ -90,10 +92,18 @@ def process():
     """Handle image upload/URL, classify with CLIP, predict, and redirect."""
     error = None
     force = request.form.get("force", "false") == "true"
-    temp_file_path = os.path.join(ARTIFACTS_DIR, "downloaded_image.jpg")
+    request_id = uuid.uuid4().hex
+    temp_file_path = os.path.join(ARTIFACTS_DIR, f"upload_{request_id}.jpg")
 
     # When force=true, the image was already saved from the previous request
-    if not force:
+    if force:
+        temp_filename = request.form.get("temp_file", "")
+        if not temp_filename or os.sep in temp_filename or "/" in temp_filename:
+            return render_template("index.html", error="Invalid request.")
+        temp_file_path = os.path.join(ARTIFACTS_DIR, temp_filename)
+        if not os.path.isfile(temp_file_path):
+            return render_template("index.html", error="Saved image not found. Please re-upload.")
+    else:
         if "file" in request.files and request.files["file"]:
             file = request.files["file"]
             try:
@@ -105,7 +115,7 @@ def process():
         elif "image_url" in request.form and request.form["image_url"]:
             image_url = request.form["image_url"]
             try:
-                result = load_image_from_url(image_url)
+                result = load_image_from_url(image_url, save_filename=f"upload_{request_id}.jpg")
                 if not result:
                     error = "Failed to load image from URL."
                     return render_template("index.html", error=error)
@@ -126,6 +136,7 @@ def process():
                     "warning.html",
                     detected_type=top_label,
                     confidence=round(confidence * 100),
+                    temp_file=os.path.basename(temp_file_path),
                 )
         except Exception as e:
             logger.error("Error during image type classification: %s", e)

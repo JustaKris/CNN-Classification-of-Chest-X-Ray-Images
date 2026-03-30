@@ -23,12 +23,19 @@ CANDIDATE_LABELS = [
 CHEST_XRAY_LABEL = "a chest X-ray"
 CONFIDENCE_THRESHOLD = 0.5
 
+_CLIP_MODEL_NAME = "openai/clip-vit-base-patch32"
+_CLIP_MODEL_REVISION = "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268"
+
 
 def load_clip_model(cache_dir="./saved_models"):
     """Load the CLIP model and processor, returning them as a tuple."""
     logger.info("Loading CLIP model for image type recognition...")
-    model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32", cache_dir=cache_dir)
-    processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32", cache_dir=cache_dir)
+    model = CLIPModel.from_pretrained(
+        _CLIP_MODEL_NAME, revision=_CLIP_MODEL_REVISION, cache_dir=cache_dir
+    )
+    processor = CLIPProcessor.from_pretrained(
+        _CLIP_MODEL_NAME, revision=_CLIP_MODEL_REVISION, cache_dir=cache_dir
+    )
     logger.info("CLIP model loaded successfully.")
     return model, processor
 
