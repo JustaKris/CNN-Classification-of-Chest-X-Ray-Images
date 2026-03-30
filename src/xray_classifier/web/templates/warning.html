@@ -28,6 +28,7 @@
         <div class="warning-actions">
             <form method="POST" action="/process">
                 <input type="hidden" name="force" value="true">
+                <input type="hidden" name="temp_file" value="{{ temp_file }}">
                 <button type="submit">Proceed Anyway</button>
             </form>
             <button onclick="window.location.href='/'">Go Back</button>

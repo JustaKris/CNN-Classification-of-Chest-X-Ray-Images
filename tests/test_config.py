@@ -14,7 +14,7 @@ class TestConfig:
 
     def test_expected_classes(self):
         """CLASSES should contain the four expected categories."""
-        expected = {"COVID19", "NORMAL", "PNEUMONIA", "TURBERCULOSIS"}
+        expected = {"COVID19", "NORMAL", "PNEUMONIA", "TUBERCULOSIS"}
         assert set(CLASSES.values()) == expected
 
     def test_image_size(self):

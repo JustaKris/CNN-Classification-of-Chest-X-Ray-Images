@@ -48,7 +48,7 @@ def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None
     return heatmap.numpy()
 
 
-def save_and_display_gradcam(img_path, heatmap, cam_path="./artifacts/", alpha=0.4):
+def save_and_display_gradcam(img_path, heatmap, cam_path="./artifacts/", cam_filename="grad_cam.jpg", alpha=0.4):
     """Overlay a Grad-CAM heatmap on the original image and save to disk."""
     # Load the original image
     img = tf.keras.preprocessing.image.load_img(img_path)
@@ -75,14 +75,14 @@ def save_and_display_gradcam(img_path, heatmap, cam_path="./artifacts/", alpha=0
 
     # Save the superimposed image
     os.makedirs(cam_path, exist_ok=True)
-    superimposed_img_path = os.path.join(cam_path, "grad_cam.jpg")
+    superimposed_img_path = os.path.join(cam_path, cam_filename)
     superimposed_img.save(superimposed_img_path)
 
     # Display Grad CAM in Jupyter or IPython
     # display(Image(filename=superimposed_img_path))
 
 
-def display_grad_heatmaps(model, img_path, last_conv_layer_name, display_heatmap=0):
+def display_grad_heatmaps(model, img_path, last_conv_layer_name, display_heatmap=0, cam_filename="grad_cam.jpg"):
     """Generate and display or save Grad-CAM visualizations for an image."""
     # Prepare image
     preprocess_input = tf.keras.applications.imagenet_utils.preprocess_input
@@ -113,7 +113,7 @@ def display_grad_heatmaps(model, img_path, last_conv_layer_name, display_heatmap
         plt.show()
     else:
         # Show GRAD heatmap
-        save_and_display_gradcam(img_path, heatmap)
+        save_and_display_gradcam(img_path, heatmap, cam_filename=cam_filename)
 
     # Re-add the softmax activation for future predictions
     model.layers[-1].activation = tf.keras.activations.softmax

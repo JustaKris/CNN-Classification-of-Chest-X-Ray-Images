@@ -208,10 +208,14 @@ a.link:hover {
 .drop-zone {
     border: 2px dashed rgba(255, 255, 255, 0.2);
     border-radius: 8px;
-    padding: 24px 16px;
-    margin-bottom: 15px;
+    padding: 32px 16px;
+    margin-bottom: 10px;
     transition: border-color 0.3s ease, background-color 0.3s ease;
     cursor: pointer;
+}
+
+.drop-zone:hover {
+    border-color: rgba(255, 255, 255, 0.35);
 }
 
 .drop-zone.drag-over {
@@ -219,10 +223,78 @@ a.link:hover {
     background-color: rgba(0, 123, 255, 0.08);
 }
 
-.drop-zone p {
-    margin: 0 0 8px;
-    color: rgba(255, 255, 255, 0.5);
+.drop-zone.has-file {
+    border-color: #28a745;
+    border-style: solid;
+    background-color: rgba(40, 167, 69, 0.06);
+}
+
+.drop-zone-icon {
+    font-size: 32px;
+    margin-bottom: 6px;
+    opacity: 0.7;
+}
+
+.drop-zone-prompt {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.55);
     font-size: 14px;
+}
+
+.drop-zone-browse {
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.file-input-hidden {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.drop-zone-file {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: #5bec80;
+    min-height: 18px;
+}
+
+.btn-upload {
+    margin-top: 6px;
+    margin-bottom: 12px;
+}
+
+.btn-upload:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* ── "or" divider ────────────────────────────────────── */
+.input-divider {
+    display: flex;
+    align-items: center;
+    margin: 8px 0 14px;
+    gap: 12px;
+}
+
+.input-divider::before,
+.input-divider::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.input-divider span {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* ── Confidence bar ──────────────────────────────────── */
@@ -269,7 +341,7 @@ a.link:hover {
 .prediction-badge.NORMAL        { background: rgba(40, 167, 69, 0.25); border: 1px solid #28a745; color: #5bec80; }
 .prediction-badge.COVID19       { background: rgba(220, 53, 69, 0.25); border: 1px solid #dc3545; color: #ff6b7a; }
 .prediction-badge.PNEUMONIA     { background: rgba(255, 193, 7, 0.25); border: 1px solid #ffc107; color: #ffe066; }
-.prediction-badge.TURBERCULOSIS { background: rgba(255, 133, 27, 0.25); border: 1px solid #ff851b; color: #ffad60; }
+.prediction-badge.TUBERCULOSIS { background: rgba(255, 133, 27, 0.25); border: 1px solid #ff851b; color: #ffad60; }
 
 /* ── Loading overlay ─────────────────────────────────── */
 .loading-overlay {

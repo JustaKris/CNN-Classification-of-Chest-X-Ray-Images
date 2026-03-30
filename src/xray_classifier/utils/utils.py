@@ -3,8 +3,9 @@
 import os
 from datetime import datetime
 from io import BytesIO
+from urllib.parse import urlparse
 
-import dill
+import joblib
 import numpy as np
 import requests  # type: ignore[import-untyped]
 import tensorflow as tf
@@ -40,10 +41,15 @@ def load_image_from_url(url, save_dir="./artifacts", save_filename="downloaded_i
         str: The local path of the downloaded image.
     """
     try:
+        parsed = urlparse(url)
+        if parsed.scheme not in ("http", "https"):
+            logger.error("Invalid URL scheme: %s", parsed.scheme)
+            return None
+
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
         }
-        response = requests.get(url, headers=headers, stream=True)
+        response = requests.get(url, headers=headers, stream=True, timeout=15)
 
         if response.status_code == 200:
             # Ensure the save directory exists
@@ -81,22 +87,22 @@ def preprocess_image(image_file, target_size=IMAGE_SIZE):
         np.ndarray: The preprocessed image as a numpy array.
     """
     try:
-        image = Image.open(image_file)
-        if image.mode.lower() != COLOR_MODE:
-            image = image.convert(COLOR_MODE.upper())
-        image = image.resize(target_size)  # Resize to match the model input
-        image = np.array(image)  # Convert to numpy array
+        pil_image: Image.Image = Image.open(image_file)
+        if pil_image.mode.lower() != COLOR_MODE:
+            pil_image = pil_image.convert(COLOR_MODE.upper())
+        pil_image = pil_image.resize(target_size)  # Resize to match the model input
+        image_array = np.array(pil_image)  # Convert to numpy array
 
         # Ensure that the image has 3 channels (RGB)
-        if len(image.shape) == 2:
-            image = np.stack((image,) * 3, axis=-1)
-        elif image.shape[2] == 1:
-            image = np.concatenate((image,) * 3, axis=-1)
+        if len(image_array.shape) == 2:
+            image_array = np.stack((image_array,) * 3, axis=-1)
+        elif image_array.shape[2] == 1:
+            image_array = np.concatenate((image_array,) * 3, axis=-1)
 
-        image = preprocess_input(image)  # Preprocess the image according to ImageNet standards
-        image = np.expand_dims(image, axis=0)  # Add batch dimension
+        image_array = preprocess_input(image_array)  # Preprocess the image according to ImageNet standards
+        image_array = np.expand_dims(image_array, axis=0)  # Add batch dimension
         logger.info("Image preprocessed successfully")
-        return image
+        return image_array
     except Exception as e:
         logger.error("Error preprocessing image: %s", e)
         raise CustomException(e)
@@ -171,7 +177,7 @@ def save_pkl(obj, filename="default_name.pkl"):
 
         # Save the object
         with open(file_path, "wb") as f:
-            dill.dump(obj, f)
+            joblib.dump(obj, f)
         logger.info("Object saved to %s", file_path)
     except Exception as e:
         logger.error("Error saving object to %s: %s", filename, e)
@@ -193,7 +199,7 @@ def load_pkl(filename="default_name.pkl"):
 
         # Load the object
         with open(file_path, "rb") as f:
-            loaded_object = dill.load(f)
+            loaded_object = joblib.load(f)
         logger.info("Object loaded from %s", file_path)
         return loaded_object
     except FileNotFoundError:

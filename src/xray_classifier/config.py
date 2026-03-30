@@ -12,7 +12,7 @@ CLASSES = {
     0: "COVID19",
     1: "NORMAL",
     2: "PNEUMONIA",
-    3: "TURBERCULOSIS",
+    3: "TUBERCULOSIS",
 }
 
 # Basic model config
