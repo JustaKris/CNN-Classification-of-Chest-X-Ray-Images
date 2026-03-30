@@ -13,9 +13,7 @@ CACHE_DIR = "./saved_models"
 def download_clip_model():
     """Download and cache the CLIP model and processor to saved_models/."""
     print(f"Downloading CLIP model '{_CLIP_MODEL_NAME}' to {CACHE_DIR} ...")
-    CLIPModel.from_pretrained(
-        _CLIP_MODEL_NAME, revision=_CLIP_MODEL_REVISION, cache_dir=CACHE_DIR
-    )
+    CLIPModel.from_pretrained(_CLIP_MODEL_NAME, revision=_CLIP_MODEL_REVISION, cache_dir=CACHE_DIR)
     CLIPProcessor.from_pretrained(
         _CLIP_MODEL_NAME, revision=_CLIP_MODEL_REVISION, cache_dir=CACHE_DIR
     )
