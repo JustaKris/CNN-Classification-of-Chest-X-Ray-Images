@@ -48,7 +48,9 @@ def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None
     return heatmap.numpy()
 
 
-def save_and_display_gradcam(img_path, heatmap, cam_path="./artifacts/", cam_filename="grad_cam.jpg", alpha=0.4):
+def save_and_display_gradcam(
+    img_path, heatmap, cam_path="./artifacts/", cam_filename="grad_cam.jpg", alpha=0.4
+):
     """Overlay a Grad-CAM heatmap on the original image and save to disk."""
     # Load the original image
     img = tf.keras.preprocessing.image.load_img(img_path)
@@ -82,7 +84,9 @@ def save_and_display_gradcam(img_path, heatmap, cam_path="./artifacts/", cam_fil
     # display(Image(filename=superimposed_img_path))
 
 
-def display_grad_heatmaps(model, img_path, last_conv_layer_name, display_heatmap=0, cam_filename="grad_cam.jpg"):
+def display_grad_heatmaps(
+    model, img_path, last_conv_layer_name, display_heatmap=0, cam_filename="grad_cam.jpg"
+):
     """Generate and display or save Grad-CAM visualizations for an image."""
     # Prepare image
     preprocess_input = tf.keras.applications.imagenet_utils.preprocess_input

@@ -99,7 +99,9 @@ def preprocess_image(image_file, target_size=IMAGE_SIZE):
         elif image_array.shape[2] == 1:
             image_array = np.concatenate((image_array,) * 3, axis=-1)
 
-        image_array = preprocess_input(image_array)  # Preprocess the image according to ImageNet standards
+        image_array = preprocess_input(
+            image_array
+        )  # Preprocess the image according to ImageNet standards
         image_array = np.expand_dims(image_array, axis=0)  # Add batch dimension
         logger.info("Image preprocessed successfully")
         return image_array

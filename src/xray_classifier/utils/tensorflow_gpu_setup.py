@@ -1,7 +1,6 @@
 """CUDA environment setup and TensorFlow GPU verification."""
 
 import os
-import sys
 
 
 def setup_cuda(cuda_home=None):
@@ -18,7 +17,11 @@ def setup_cuda(cuda_home=None):
 
     os.environ["CUDA_HOME"] = cuda_home
     os.environ["PATH"] = os.pathsep.join(
-        [os.environ.get("PATH", ""), os.path.join(cuda_home, "bin"), os.path.join(cuda_home, "libnvvp")]
+        [
+            os.environ.get("PATH", ""),
+            os.path.join(cuda_home, "bin"),
+            os.path.join(cuda_home, "libnvvp"),
+        ]
     )
 
 
